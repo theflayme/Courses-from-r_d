@@ -1,7 +1,7 @@
 type UserInfo = {
     name: string;
-    birthdayDate: Date;
-    numberPhone: number;
+    birthdayDate: Date | string;
+    numberPhone: number | string;
     address: {
         street: undefined;
         city: undefined;
