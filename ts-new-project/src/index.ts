@@ -3,9 +3,9 @@ type UserInfo = {
     birthdayDate: Date;
     numberPhone: number;
     address: {
-        street: string;
-        city: string;
-        country: string;
+        street: undefined;
+        city: undefined;
+        country: undefined;
     };
     children?: null;
 };
