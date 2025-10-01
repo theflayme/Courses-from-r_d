@@ -65,7 +65,7 @@
     "id": 8,
     "title": "Налаштувати GitHub Actions",
     "description": "Додати CI/CD для проєкту",
-    "createdAt": "2025-09-28T16:40:00Z",
+    "createdAt": "2025-2-10T16:40:00Z",
     "status": "in_progress",
     "priority": "high",
     "deadline": "2025-10-06T22:00:00Z"
