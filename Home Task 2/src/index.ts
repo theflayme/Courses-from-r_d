@@ -24,11 +24,11 @@
     - перевірки, чи завершено завдання до дедлайну.
 
     Усі константи та типи винесіть в окремі файли:
-    - constants.ts — для дефолтних значень;
-    - dto/Task.ts — для типів Task, Status, Priority тощо.
+    + constants.ts — для дефолтних значень;
+    + dto/Task.ts — для типів Task, Status, Priority тощо.
 */
 
-import { success, z } from 'zod';
+import { z } from 'zod';
 
 import TaskList from './task.json'
 import { Task } from './dto/Task'
@@ -41,11 +41,13 @@ if (!resultValid.success){
     console.error(resultValid.error)
 }
 
-const TaskManager = resultValid.data;
+const TaskManager = resultValid.data ;
 
-function DetailID (id: number | string){
+// Отримання деталей завдання за вказаним id
+function DetailID (id: number){
     return TaskManager.filter((d) => d.id === id);
 }
 
-console.log(DetailID(4))
+console.log(DetailID(1))
 
+// Створення нового завдання
