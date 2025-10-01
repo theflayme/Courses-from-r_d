@@ -20,3 +20,4 @@ export const Task = z.object({
 })
 
 export type TaskType = z.infer<typeof Task>;
+
