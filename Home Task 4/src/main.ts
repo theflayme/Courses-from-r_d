@@ -316,7 +316,7 @@ document.querySelector<HTMLFormElement>('#deadlineCheckForm')!.addEventListener(
   itemTaskManager.deadlineCheck(id).then(isDeadline => {
     const taskElement= `
       <tr> 
-        <th>Дедлайн: ${isDeadline ? 'true' : 'false'}</th>
+        <th>Дедлайн: ${isDeadline ? 'Активний' : 'Вже пройшов дедлайн'}</th>
       </tr>
     `;
 
@@ -327,16 +327,24 @@ document.querySelector<HTMLFormElement>('#deadlineCheckForm')!.addEventListener(
 
 document.querySelector<HTMLButtonElement>('#getTask')!.addEventListener('click', () => {
   itemTaskManager.getTask().then(tasks => {
-    const taskElements = tasks.map(task => `
-      <tr> 
-        <th>${task.id}</th>
-        <th>${task.title}</th>
-        <th>${task.description}</th>
-        <th>Статус: ${task.status}</th>
-        <th>Приоритет: ${task.priority}</th>
-        <th>Протяжність виконання: ${task.createdAt} - ${task.deadline}</th>
-      </tr>
-    `).join('');
+    const taskElements = tasks.map(task => {
+      const priorityClass =
+        task.priority === "low" ? "styleBoxLow" :
+        task.priority === "high" ? "styleBoxHigh" :
+        task.priority === "medium" ? "styleBoxMedium" :
+        "style";
+
+      return `
+        <tr> 
+          <th class="thId">${task.id}</th>
+          <th>${task.title}</th>
+          <th>${task.description}</th>
+          <th>Статус: ${task.status}</th>
+          <th class="${priorityClass}">Приоритет: ${task.priority}</th>
+          <th>Протяжність виконання: ${task.createdAt} - ${task.deadline}</th>
+        </tr>
+      `;
+    }).join('');
 
     document.querySelector<HTMLDivElement>('#array')!.innerHTML = `<table>${taskElements}</table>`;
   });
