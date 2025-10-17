@@ -1,0 +1,166 @@
+{
+  "tasks": [
+    {
+      "id": "1",
+      "title": "Прочитати статтю про React",
+      "description": "Ознайомитися з новими можливостями React 19",
+      "createdAt": "2025-09-27T11:00:00Z",
+      "status": "todo",
+      "priority": "medium",
+      "deadline": "2025-10-03T12:00:00Z"
+    },
+    {
+      "id": "2",
+      "title": "Підготувати презентацію",
+      "description": "Презентація для навчального курсу",
+      "createdAt": "2025-09-26T14:20:00Z",
+      "status": "in_progress",
+      "priority": "high",
+      "deadline": "2025-10-04T17:00:00Z"
+    },
+    {
+      "id": "3",
+      "title": "Перевірити пошту",
+      "description": "Розібрати вхідні листи та відповісти на важливі",
+      "createdAt": "2025-09-25T09:00:00Z",
+      "status": "todo",
+      "priority": "low",
+      "deadline": "2025-10-01T09:00:00Z"
+    },
+    {
+      "id": "6",
+      "title": "Оновити резюме",
+      "description": "Додати останні проєкти та навички",
+      "createdAt": "2025-09-29T10:15:00Z",
+      "status": "done",
+      "priority": "medium",
+      "deadline": "2025-09-30T23:59:00Z"
+    },
+    {
+      "id": "7",
+      "title": "Зробити бекап бази даних",
+      "description": "Перевірити автоматичне резервне копіювання",
+      "createdAt": "2025-10-01T08:00:00Z",
+      "status": "todo",
+      "priority": "high",
+      "deadline": "2025-10-05T08:00:00Z"
+    },
+    {
+      "id": "8",
+      "title": "Протестувати REST API",
+      "description": "Використати Postman для тестів ендпоінтів",
+      "createdAt": "2025-10-03T15:30:00Z",
+      "status": "in_progress",
+      "priority": "high",
+      "deadline": "2025-10-06T18:00:00Z"
+    },
+    {
+      "id": "9",
+      "title": "Виправити баг у формі логіну",
+      "description": "Форма не показує помилку при неправильному паролі",
+      "createdAt": "2025-10-04T09:00:00Z",
+      "status": "in_progress",
+      "priority": "medium",
+      "deadline": "2025-10-07T09:00:00Z"
+    },
+    {
+      "id": "10",
+      "title": "Підготувати звіт по проекту",
+      "description": "Зібрати статистику і результати роботи команди",
+      "createdAt": "2025-10-15T13:58:00Z",
+      "status": "todo",
+      "priority": "high",
+      "deadline": "2025-10-15T13:59:00Z"
+    },
+    {
+      "id": "11",
+      "title": "Пройти курс з TypeScript",
+      "description": "Закінчити відеоуроки та зробити фінальний проект",
+      "createdAt": "2025-09-24T17:30:00Z",
+      "status": "done",
+      "priority": "medium",
+      "deadline": "2025-09-28T17:30:00Z"
+    },
+    {
+      "id": "12",
+      "title": "Оновити документацію API",
+      "description": "Додати нові ендпоінти у README",
+      "createdAt": "2025-10-07T11:00:00Z",
+      "status": "todo",
+      "priority": "low",
+      "deadline": "2025-10-12T11:00:00Z"
+    },
+    {
+      "id": "13",
+      "title": "Провести ревʼю коду",
+      "description": "Перевірити пул-реквест від колеги",
+      "createdAt": "2025-10-06T09:45:00Z",
+      "status": "in_progress",
+      "priority": "medium",
+      "deadline": "2025-10-08T09:45:00Z"
+    },
+    {
+      "id": "14",
+      "title": "Підготувати демо для замовника",
+      "description": "Зробити коротку демонстрацію нових функцій",
+      "createdAt": "2025-10-08T10:10:00Z",
+      "status": "todo",
+      "priority": "high",
+      "deadline": "2025-10-13T14:00:00Z"
+    },
+    {
+      "id": "15",
+      "title": "Перевірити оновлення залежностей",
+      "description": "Оновити npm пакети до останніх версій",
+      "createdAt": "2025-10-09T08:00:00Z",
+      "status": "in_progress",
+      "priority": "medium",
+      "deadline": "2025-10-12T23:59:00Z"
+    },
+    {
+      "id": "16",
+      "title": "Відвідати мітинг команди",
+      "description": "Обговорення плану на наступний спринт",
+      "createdAt": "2025-10-10T09:00:00Z",
+      "status": "done",
+      "priority": "low",
+      "deadline": "2025-10-10T10:00:00Z"
+    },
+    {
+      "id": "17",
+      "title": "Написати юніт-тести",
+      "description": "Додати покриття тестами для критичних функцій",
+      "createdAt": "2025-10-11T12:00:00Z",
+      "status": "todo",
+      "priority": "high",
+      "deadline": "2025-10-16T18:00:00Z"
+    },
+    {
+      "id": "18",
+      "title": "Оптимізувати SQL-запити",
+      "description": "Перевірити індекси та швидкодію запитів",
+      "createdAt": "2025-10-12T11:30:00Z",
+      "status": "in_progress",
+      "priority": "high",
+      "deadline": "2025-10-18T11:30:00Z"
+    },
+    {
+      "id": "19",
+      "title": "Виправити адаптивність сторінки",
+      "description": "Сторінка некоректно відображається на мобільних",
+      "createdAt": "2025-10-13T10:15:00Z",
+      "status": "todo",
+      "priority": "medium",
+      "deadline": "2025-10-17T10:15:00Z"
+    },
+    {
+      "id": "20",
+      "title": "Додати новий компонент у проект",
+      "description": "Реалізувати компонент для відображення статистики",
+      "createdAt": "2025-10-14T14:45:00Z",
+      "status": "todo",
+      "priority": "medium",
+      "deadline": "2025-10-20T14:45:00Z"
+    }
+  ]
+}
