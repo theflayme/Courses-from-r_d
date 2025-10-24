@@ -13,6 +13,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+*{
+  padding: 0;
+  margin: 0;
+}
+
 body {
   padding: 2em 5em;
   margin: 0;
@@ -21,28 +26,18 @@ body {
   background: #181818;
 }
 
-header{
-  width: 100%;
 
+ul{
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  list-style: none;
+  
+  padding: 0;
+  margin: 0;
 
+  gap: 20px;
 }
 
-header img{
-  height: 55px;
-  width: auto;
-  border-radius: 100%;
-}
-
-table{
-    color: #ffffff;
-}
-
-
-th{
-    text-align: left;
-}
 
 button {
   background-color: #393939;
@@ -60,4 +55,9 @@ button {
 
 button:hover{
   opacity: 0.75;
+}
+
+button:disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
 }
