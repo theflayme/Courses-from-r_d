@@ -1,0 +1,16 @@
+{
+  "name": "ts-new-project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn src/index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "ts-node-dev": "^2.0.0",
+    "typescipt": "^1.0.0"
+  }
+}

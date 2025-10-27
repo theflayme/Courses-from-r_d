@@ -1,0 +1,36 @@
+import fetchApi from "../api/fetchApi";
+import { useState, useEffect } from "react";
+import { type Task } from "../utils/ValidationSchema";
+
+import '../styles/TaskList.css';
+
+const myTask = () => {
+
+    const [tasks, setTasks] = useState<Task[]>([]);
+
+    useEffect(() => {
+        fetchApi.getTask().then(setTasks);
+    }, []);
+    
+    return (
+        <div>
+            <ul className="taskList">
+            {tasks.map((task) => (
+                <li key={task.id} className="taskItem">
+                    <h3>{task.title}</h3>
+                    { task.description &&<p>{task.description}</p> }
+                    <span className={ task.status === "todo" ? "todoStatus" : task.status === "in_progress" ? "inProgressStatus" : "doneStatus"}>
+                        {task.status}
+                    </span>
+                    <span>
+                        {new Date(task.createdAt).toDateString()} –{" "}
+                        {new Date(task.deadline).toDateString()}
+                    </span>
+                </li>
+            ))}
+            </ul>
+        </div>
+    );
+}
+
+export default myTask;

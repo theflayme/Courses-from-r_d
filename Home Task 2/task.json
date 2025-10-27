@@ -1,0 +1,91 @@
+[
+  {
+    "id": 1,
+    "title": "Вивчити TypeScript",
+    "description": "Пройти базові уроки та зробити невеликий проєкт",
+    "createdAt": "2025-09-30T10:00:00Z",
+    "status": "todo",
+    "priority": "high",
+    "deadline": "2025-10-10T18:00:00Z"
+  },
+  {
+    "id": 2,
+    "title": "Сходити в спортзал",
+    "description": "Тренування на витривалість та силові вправи",
+    "createdAt": "2025-09-29T15:30:00Z",
+    "status": "in_progress",
+    "priority": "medium",
+    "deadline": "2025-10-05T19:00:00Z"
+  },
+  {
+    "id": 3,
+    "title": "Написати звіт",
+    "description": "Звіт за місяць про виконану роботу",
+    "createdAt": "2025-09-28T08:45:00Z",
+    "status": "done",
+    "priority": "low",
+    "deadline": "2025-09-30T20:00:00Z"
+  },
+  {
+    "id": 4,
+    "title": "Оновити сайт",
+    "description": "Додати нову сторінку з портфоліо",
+    "createdAt": "2025-09-30T09:00:00Z",
+    "status": "in_progress",
+    "priority": "high",
+    "deadline": "2025-10-07T23:59:00Z"
+  },
+  {
+    "id": 5,
+    "title": "Прочитати статтю про React",
+    "description": "Ознайомитися з новими можливостями React 19",
+    "createdAt": "2025-09-27T11:00:00Z",
+    "status": "todo",
+    "priority": "medium",
+    "deadline": "2025-10-03T12:00:00Z"
+  },
+  {
+    "id": 6,
+    "title": "Підготувати презентацію",
+    "description": "Презентація для навчального курсу",
+    "createdAt": "2025-09-26T14:20:00Z",
+    "status": "in_progress",
+    "priority": "high",
+    "deadline": "2025-10-04T17:00:00Z"
+  },
+  {
+    "id": 7,
+    "title": "Перевірити пошту",
+    "description": "Розібрати вхідні листи та відповісти на важливі",
+    "status": "todo",
+    "priority": "low",
+    "deadline": "2025-10-01T09:00:00Z"
+  },
+  {
+    "id": 8,
+    "title": "Налаштувати GitHub Actions",
+    "description": "Додати CI/CD для проєкту",
+    "createdAt": "2025-2-10T16:40:00Z",
+    "status": "in_progress",
+    "priority": "high",
+    "deadline": "2025-10-06T22:00:00Z"
+  },
+  {
+    "id": 9,
+    "title": "Зробити резервну копію",
+    "description": "Зберегти копію файлів на зовнішньому диску",
+    "createdAt": "2025-09-29T19:10:00Z",
+    "status": "done",
+    "priority": "medium",
+    "deadline": "2025-09-30T21:00:00Z"
+  },
+  {
+    "id": 10,
+    "title": "Написати тестові завдання",
+    "description": "Підготувати приклади для співбесіди",
+    "createdAt": "2025-09-30T13:50:00Z",
+    "status": "todo",
+    "priority": "low",
+    "deadline": "2025-10-08T16:00:00Z"
+  }
+]
