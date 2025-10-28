@@ -1,3 +1,5 @@
+import { Task } from "./task.class";
+
 export type TaskStatus = 'todo' | 'in_progress' | 'done';
 export type TaskPriority = 'low' | 'medium' | 'high';
 
@@ -16,3 +18,5 @@ export type TaskFilter = {
     priority?: TaskPriority;
     deadline?: Date;
 }
+
+export type TaskUpdateType = Partial<Omit<Task, 'id' | 'createdAt'>>;

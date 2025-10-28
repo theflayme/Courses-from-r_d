@@ -1,4 +1,4 @@
-import { TaskFilter } from './task.types';
+import { TaskFilter, TaskUpdateType } from './task.types';
 import { Task } from './task.class';
 
 export class TaskService {
@@ -10,7 +10,6 @@ export class TaskService {
 
     createTask(task: Task) {
         this.tasks.push(task);
-        return true;
     }
 
     deleteTask(id: number) {
@@ -22,18 +21,22 @@ export class TaskService {
         }
     }
 
-    updateTask(id: number, newUpdateTask: Partial<Omit<Task, 'id' | 'createdAt'>>) {
+    updateTask(id: number, newUpdateTask: TaskUpdateType) {
         const elementId = this.tasks.findIndex(task => task.id === id);
         
         if (elementId !== -1) {
             const task = this.tasks[elementId];
             
-            Object.assign(task, newUpdateTask);
-            task.validate();
+            const tempTask = Object.assign(
+                Object.create(Object.getPrototypeOf(task)), 
+                task, 
+                newUpdateTask
+            );
+            
+            tempTask.validate();
+            Object.assign(task, newUpdateTask);            
             return task;
         }
-        
-        return null;
     }
     
 

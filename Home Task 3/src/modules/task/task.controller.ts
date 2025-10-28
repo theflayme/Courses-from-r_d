@@ -1,5 +1,5 @@
 import { TaskService } from './task.service';
-import { TaskStatus, TaskPriority } from './task.types';
+import { TaskStatus, TaskPriority, TaskUpdateType } from './task.types';
 import { Task } from './task.class';
 
 export class TaskController {
@@ -17,7 +17,7 @@ export class TaskController {
         return this.taskService.deleteTask(id);
     }
 
-    updateTask(id: number, newUpdateTask: Partial<Task>) {
+    updateTask(id: number, newUpdateTask: TaskUpdateType) {
         return this.taskService.updateTask(id, newUpdateTask);
     }
 
