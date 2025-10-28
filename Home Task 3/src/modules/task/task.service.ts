@@ -23,22 +23,16 @@ export class TaskService {
 
     updateTask(id: number, newUpdateTask: TaskUpdateType) {
         const elementId = this.tasks.findIndex(task => task.id === id);
-        
-        if (elementId !== -1) {
-            const task = this.tasks[elementId];
-            
-            const tempTask = Object.assign(
-                Object.create(Object.getPrototypeOf(task)), 
-                task, 
-                newUpdateTask
-            );
-            
-            tempTask.validate();
-            Object.assign(task, newUpdateTask);            
-            return task;
-        }
-    }
     
+        const task = this.tasks[elementId];
+        Object.assign(task, newUpdateTask);
+
+        if (task.validate()) {
+            return task.validate();
+        }
+    
+        return task;
+    }
 
     filterTask(filter: TaskFilter) {
         return this.tasks.filter((task: Task) =>

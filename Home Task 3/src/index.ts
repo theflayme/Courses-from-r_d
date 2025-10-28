@@ -64,11 +64,13 @@ taskController.createTask(
 
 console.log('----- Оновлення задач -----');
 console.log('Приклад валідації:\n');
+console.log('Не валідна задача:');
 const updatedTask = taskController.updateTask(1, {
     title: '',
 });
 console.log(updatedTask);
 
+console.log('\nВалідна задача:');
 const updatedTask2 = taskController.updateTask(2, {
     title: 'Завдання 2 Оновлене',
 });

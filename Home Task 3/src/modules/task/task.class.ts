@@ -11,15 +11,15 @@ export class Task implements TaskType {
         public deadline: Date
     ) { this.validate() }
 
-    public validate() {
+    public validate(): string | undefined {
         if (!this.title || !this.description || !this.status || !this.priority || !this.createdAt || !this.deadline) {
-            console.log('Треба заповнити всі поля');
+            return 'Треба заповнити всі поля';
         }
         if (this.id < 0) {
-            console.log('ID не може бути від’ємним');
+            return 'ID не може бути від’ємним';
         }
         if (this.createdAt > this.deadline) {
-            console.log('Дата створення не може бути більшою за дату завершення');
+            return 'Дата створення не може бути більшою за дату завершення';
         }
     }
 
