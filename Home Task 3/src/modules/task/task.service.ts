@@ -10,7 +10,10 @@ export class TaskService {
     }
 
     createTask(task: Task) {
-        this.tasks.push(task);
+       const validationError = validateTask(task);
+       if (validationError) return validationError;
+       
+       this.tasks.push(task);
     }
 
     deleteTask(id: number) {
@@ -25,13 +28,13 @@ export class TaskService {
     updateTask(id: number, newUpdateTask: TaskUpdateType) {
         const elementId = this.tasks.findIndex(task => task.id === id);
         if (elementId === -1) return 'Задачу не знайдено';
-      
-        const validationError = validateTask(newUpdateTask);
+
+        const validationError = validateTask({ ...this.tasks[elementId], ...newUpdateTask });
         if (validationError) return validationError;
-      
-        Object.assign(this.tasks[elementId], newUpdateTask);
+
+        this.tasks[elementId].update(newUpdateTask);
         return this.tasks[elementId];
-      }
+    }
 
     filterTask(filter: TaskFilter) {
         return this.tasks.filter((task: Task) =>

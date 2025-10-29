@@ -9,7 +9,6 @@ import { Epic } from './modules/task/model/Epic.model';
 
 const taskController = new TaskController(new TaskService());
 
-
 taskController.createTask(
     new Bug(
         1,
@@ -35,6 +34,7 @@ taskController.createTask(
         1
     )
 )
+
 
 taskController.createTask(
     new Story(
@@ -72,7 +72,7 @@ console.log(updatedTask);
 
 console.log('\nВалідна задача:');
 const updatedTask2 = taskController.updateTask(2, {
-    title: 'Завдання 2 Оновлене',
+    description: 'Завдання 2 Оновлене',
 });
 console.log(updatedTask2);
 
