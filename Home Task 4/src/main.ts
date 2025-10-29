@@ -1,4 +1,4 @@
-import { itemTaskManager } from './api/fetchApi';
+import { itemTaskManager } from './api/task.api';
 import './styles/style.css'
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `

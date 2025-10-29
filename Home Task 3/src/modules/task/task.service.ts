@@ -1,5 +1,6 @@
 import { TaskFilter, TaskUpdateType } from './task.types';
 import { Task } from './task.class';
+import { validateTask } from '../../utils'
 
 export class TaskService {
     private tasks: Task[] = [];
@@ -23,16 +24,14 @@ export class TaskService {
 
     updateTask(id: number, newUpdateTask: TaskUpdateType) {
         const elementId = this.tasks.findIndex(task => task.id === id);
-    
-        const task = this.tasks[elementId];
-        Object.assign(task, newUpdateTask);
-
-        if (task.validate()) {
-            return task.validate();
-        }
-    
-        return task;
-    }
+        if (elementId === -1) return 'Задачу не знайдено';
+      
+        const validationError = validateTask(newUpdateTask);
+        if (validationError) return validationError;
+      
+        Object.assign(this.tasks[elementId], newUpdateTask);
+        return this.tasks[elementId];
+      }
 
     filterTask(filter: TaskFilter) {
         return this.tasks.filter((task: Task) =>
