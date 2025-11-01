@@ -1,15 +1,6 @@
 {
   "tasks": [
     {
-      "id": "1",
-      "title": "Прочитати статтю про React",
-      "description": "Ознайомитися з новими можливостями React 19",
-      "createdAt": "2025-09-27T11:00:00Z",
-      "status": "todo",
-      "priority": "medium",
-      "deadline": "2025-10-03T12:00:00Z"
-    },
-    {
       "id": "2",
       "title": "Підготувати презентацію",
       "description": "Презентація для навчального курсу",
@@ -19,13 +10,13 @@
       "deadline": "2025-10-04T17:00:00Z"
     },
     {
-      "id": "5",
-      "title": "1123",
-      "description": "1231231232131",
-      "status": "todo",
-      "priority": "low",
-      "createdAt": "0023-12-31T01:12",
-      "deadline": "3213-12-21T12:31"
+      "id": "6",
+      "title": "1",
+      "description": "1",
+      "status": "in_progress",
+      "priority": "medium",
+      "createdAt": "2025-10-31T12:03",
+      "deadline": "2025-10-29T12:33"
     }
   ]
 }

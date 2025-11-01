@@ -2,38 +2,39 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 
-import { taskSchema, type Task } from "../utils/ValidationSchema";
-import fetchApi from "../api/fetchApi";
+import { taskSchema, type Task } from "../types.ts";
+import Api from "../api.ts";
 
-import '../styles/CreateTask.css';
+import '../../../styles/CreateTask.css';
 
 const CreateTask = () => {
-    const { register, handleSubmit, formState: { errors, isSubmitting, isValid } } = useForm({
-        resolver: zodResolver(taskSchema),
-        mode: 'onTouched',
-    });
-    
-    const onSubmit = async (data: Task) => {
-        const newTask = await fetchApi.createTask(data);
-        console.log(newTask);
-    };
-
     const navigate = useNavigate();
 
+    const { register, handleSubmit, formState: { errors, isSubmitting, isValid } } = useForm({
+        resolver: zodResolver(taskSchema),
+        mode: 'onChange',
+    });
+
+    const onSubmit = async (data: Task) => {
+        const newTask = await Api.createTask(data);
+        console.log(newTask);
+        navigate('/tasks');
+    };
+    
     return <form onSubmit={handleSubmit(onSubmit)}>
             <div className="formGroup">
                 <div className="formGroupItem">
-                    <label>Заголовок</label>
-                    <input {...register('title', { required: true })} />
+                    <label htmlFor="title">Заголовок</label>
+                    <input id="title" {...register('title', { required: true })} />
                     {errors.title && <span className="errorTextMessage">{errors.title.message}</span>}
                 </div>
                 <div className="formGroupItem">
-                    <label>Опис <desc>(Не обовʼязково)</desc></label>
-                    <input {...register('description')} />
+                    <label htmlFor="description">Опис <span>(Не обовʼязково)</span></label>
+                    <input id="description" {...register('description')} />
                 </div>
                 <div className="formGroupItem">
-                    <label>Статус</label>
-                    <select {...register('status', { required: true })}>
+                    <label htmlFor="status">Статус</label>
+                    <select id="status" {...register('status', { required: true })}>
                         <option value="todo">Todo</option>
                         <option value="in_progress">In Progress</option>
                         <option value="done">Done</option>
@@ -41,8 +42,8 @@ const CreateTask = () => {
                     {errors.status && <span className="errorTextMessage">{errors.status.message}</span>}
                 </div>
                 <div className="formGroupItem">
-                    <label>Пріоритет</label>
-                    <select {...register('priority', { required: true })}>
+                    <label htmlFor="priority">Пріоритет</label>
+                    <select id="priority" {...register('priority', { required: true })}>
                         <option value="low">Low</option>
                         <option value="medium">Medium</option>
                         <option value="high">High</option>
@@ -50,17 +51,17 @@ const CreateTask = () => {
                     {errors.priority && <span className="errorTextMessage">{errors.priority.message}</span>}
                 </div>
                 <div className="formGroupItem">
-                    <label>Дата створення</label>
-                    <input {...register('createdAt', { required: true })} type="date" />
+                    <label htmlFor="createdAt">Дата створення</label>
+                    <input id="createdAt" {...register('createdAt', { required: true })} type="date" />
                     {errors.createdAt && <span className="errorTextMessage">{errors.createdAt.message}</span>}
                 </div>
                 <div className="formGroupItem">
-                    <label>Дата виконання</label>
-                    <input {...register('deadline', { required: true })} type="date" />
+                    <label htmlFor="deadline">Дата виконання</label>
+                    <input id="deadline" {...register('deadline', { required: true })} type="date" />
                     {errors.deadline && <span className="errorTextMessage">{errors.deadline.message}</span>}
                 </div>
-    
-                <button disabled={!isValid || isSubmitting} type="submit" onClick={() => navigate('/TaskList')}><span>Створити задачу</span></button>
+
+                <button disabled={!isValid || isSubmitting} type="submit">Створити задачу</button>
             </div>
     </form>
 }
