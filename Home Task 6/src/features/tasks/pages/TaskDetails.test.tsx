@@ -107,6 +107,7 @@ describe('Тестування деталей задачі', () => {
             <MemoryRouter initialEntries={['/tasks/1']}>
                 <Routes>
                     <Route path="/tasks/:id" element={<TaskDetails />} />
+                    <Route path="/tasks" element={<div>Список задач</div>} />
                 </Routes>
             </MemoryRouter>
         );
