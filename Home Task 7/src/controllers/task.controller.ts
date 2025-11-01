@@ -81,6 +81,6 @@ export const deleteTask = (req: Request, res: Response) => {
         return;
     }
 
-    taskService.splice(elementId, 1);
+    taskService.splice(elementId, 0);
     res.status(200).json({ task: taskService[elementId], message: 'Задача видалена' });
 }
