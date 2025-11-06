@@ -1,22 +1,85 @@
 {
   "tasks": [
     {
-      "id": "2",
-      "title": "Підготувати презентацію",
-      "description": "Презентація для навчального курсу",
-      "createdAt": "2025-09-26T14:20:00Z",
+      "id": "3",
+      "title": "Пійти на прогулянку",
+      "description": "Самотній :(",
+      "status": "in_progress",
+      "priority": "medium",
+      "createdAt": "2025-12-05T22:22",
+      "deadline": "2025-01-07T20:22:00.000Z"
+    },
+    {
+      "id": "4",
+      "title": "Оновити документацію",
+      "description": "Актуалізувати технічну документацію проекту",
+      "createdAt": "2025-09-23T11:45:00Z",
+      "status": "todo",
+      "priority": "low",
+      "deadline": "2025-10-05T15:30:00Z"
+    },
+    {
+      "id": "5",
+      "title": "Протестувати новий функціонал",
+      "description": "Перевірити роботу нових можливостей системи",
+      "createdAt": "2025-09-22T13:20:00Z",
       "status": "in_progress",
       "priority": "high",
-      "deadline": "2025-10-04T17:00:00Z"
+      "deadline": "2025-10-02T18:00:00Z"
     },
     {
       "id": "6",
-      "title": "1",
-      "description": "1",
-      "status": "in_progress",
+      "title": "Організувати навчання",
+      "description": "Підготувати матеріали для навчання нових співробітників",
+      "createdAt": "2025-09-21T08:00:00Z",
+      "status": "todo",
       "priority": "medium",
-      "createdAt": "2025-10-31T12:03",
-      "deadline": "2025-10-29T12:33"
+      "deadline": "2025-10-07T14:00:00Z"
+    },
+    {
+      "id": "7",
+      "title": "Виправити баги",
+      "description": "Усунути критичні помилки в коді",
+      "createdAt": "2025-09-20T15:10:00Z",
+      "status": "in_progress",
+      "priority": "high",
+      "deadline": "2025-09-29T20:00:00Z"
+    },
+    {
+      "id": "8",
+      "title": "Підготувати демо",
+      "description": "Створити демонстрацію для клієнта",
+      "createdAt": "2025-09-19T12:30:00Z",
+      "status": "done",
+      "priority": "medium",
+      "deadline": "2025-09-28T16:00:00Z"
+    },
+    {
+      "id": "9",
+      "title": "Оптимізувати базу даних",
+      "description": "Покращити продуктивність запитів до БД",
+      "createdAt": "2025-09-18T10:45:00Z",
+      "status": "todo",
+      "priority": "low",
+      "deadline": "2025-10-10T11:00:00Z"
+    },
+    {
+      "id": "10",
+      "title": "Створити резервну копію",
+      "description": "Зробити бекап всіх важливих даних",
+      "createdAt": "2025-09-17T14:00:00Z",
+      "status": "done",
+      "priority": "medium",
+      "deadline": "2025-09-27T09:00:00Z"
+    },
+    {
+      "id": "11",
+      "title": "Заплатити за курси",
+      "description": "У 18 годині",
+      "status": "in_progress",
+      "priority": "high",
+      "createdAt": "2025-06-11T03:20:00.000Z",
+      "deadline": "2025-11-07T18:00:00.000Z"
     }
   ]
 }

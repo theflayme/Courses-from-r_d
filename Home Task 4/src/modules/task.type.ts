@@ -10,3 +10,5 @@ export type TaskType = {
     createdAt: string;
     deadline: string;
 }
+
+export type UpdateTaskType = Omit<TaskType, 'id' | 'createdAt'>;

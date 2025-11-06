@@ -4,10 +4,157 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./src/styles/style.css">
     <title>home-task-4</title>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
+    <div id="app">
+      <div>
+        <header>
+          <h1>Менеджер Завдань</h1>
+        </header>
+
+        <!-- Модальне вікно для створення завдання -->
+        <div id="createModal" class="modal">
+          <div class="modal-content">
+            <button class="modal-close" id="createModalClose">×</button>
+            <h2>Створити завдання</h2>
+            <form id="createTaskForm">
+              <input type="text" name="title" id="createTitle" placeholder="Назва завдання" required>
+              <textarea name="description" id="createDescription" placeholder="Опис завдання" required></textarea>
+              <select name="status" id="createStatus">
+                <option value="todo">До виконання</option>
+                <option value="in_progress">В процесі</option>
+                <option value="done">Виконано</option>
+              </select>
+              <select name="priority" id="createPriority">
+                <option value="low">Низький</option>
+                <option value="medium">Середній</option>
+                <option value="high">Високий</option>
+              </select>
+              <input type="datetime-local" name="createdAt" id="createCreatedAt" placeholder="Дата створення" required>
+              <input type="datetime-local" name="deadline" id="createDeadline" placeholder="Дедлайн" required>
+              <button type="submit" class="button">Створити</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Модальне вікно для пошуку завдання по id -->
+        <div id="getTaskByIdModal" class="modal">
+          <div class="modal-content">
+            <button class="modal-close" id="getTaskByIdModalClose">×</button>
+            <h2>Показати завдання по ID</h2>
+            <form id="getTaskByIdForm">
+              <input type="number" name="id" id="getTaskByIdId" placeholder="ID завдання" required>
+              <button type="submit" class="button">Відобразити</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Модальне вікно для видалення завдання -->
+        <div id="deleteModal" class="modal">
+          <div class="modal-content">
+            <button class="modal-close" id="deleteModalClose">×</button>
+            <h2>Видалити завдання</h2>
+            <form id="deleteTaskForm">
+              <input type="number" name="id" id="deleteId" placeholder="ID завдання" required>
+              <button type="submit" class="button">Видалити</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Модальне вікно для оновлення завдання -->
+        <div id="updateModal" class="modal">
+          <div class="modal-content">
+            <button class="modal-close" id="updateModalClose">×</button>
+            <h2>Оновити завдання</h2>
+            <form id="updateTaskForm">
+              <input type="number" name="id" id="updateId" placeholder="ID завдання" required>
+              <input type="text" name="title" id="updateTitle" placeholder="Назва завдання" required>
+              <textarea name="description" id="updateDescription" placeholder="Опис завдання" required></textarea>
+              <select name="status" id="updateStatus">
+                <option value="todo">До виконання</option>
+                <option value="in_progress">В процесі</option>
+                <option value="done">Виконано</option>
+              </select>
+              <select name="priority" id="updatePriority">
+                <option value="low">Низький</option>
+                <option value="medium">Середній</option>
+                <option value="high">Високий</option>
+              </select>
+              <input type="datetime-local" name="createdAt" id="updateCreatedAt" placeholder="Дата створення" required>
+              <input type="datetime-local" name="deadline" id="updateDeadline" placeholder="Дедлайн" required>
+              <button type="submit" class="button">Оновити завдання</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Модальне вікно для фільтру по статусу -->
+        <div id="statusModal" class="modal">
+          <div class="modal-content">
+            <button class="modal-close" id="statusModalClose">×</button>
+            <h2>Фільтр за статусом</h2>
+            <form id="statusFilterForm">
+              <select name="status" id="filterStatus" required>
+                <option value="">Виберіть статус</option>
+                <option value="todo">До виконання</option>
+                <option value="in_progress">В процесі</option>
+                <option value="done">Виконано</option>
+              </select>
+              <button type="submit" class="button">Показати завдання</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Модальне вікно для фільтру по пріоритету -->
+        <div id="priorityModal" class="modal">
+          <div class="modal-content">
+            <button class="modal-close" id="priorityModalClose">×</button>
+            <h2>Фільтр за пріоритетом</h2>
+            <form id="priorityFilterForm">
+              <select name="priority" id="filterPriority" required>
+                <option value="">Виберіть пріоритет</option>
+                <option value="low">Низький</option>
+                <option value="medium">Середній</option>
+                <option value="high">Високий</option>
+              </select>
+              <button type="submit" class="button">Показати завдання</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Модальне вікно для перевірки дедлайну -->
+        <div id="deadlineModal" class="modal">
+          <div class="modal-content">
+            <button class="modal-close" id="deadlineModalClose">×</button>
+            <h2>Перевірка дедлайну</h2>
+            <form id="deadlineCheckForm">
+              <input type="number" name="id" id="deadlineId" placeholder="ID завдання" required>
+              <button type="submit" class="button">Перевірити</button>
+            </form>
+          </div>
+        </div>
+
+        <main>
+          <ul>
+            <li><button id="getTask" class="button">Показати всі завдання</button></li>
+            <li><button id="getTaskById" class="button">Показати завдання по ID</button></li>
+            <li><button id="createTask" class="button">Створити завдання</button></li>
+            <li><button id="deleteTask" class="button">Видалити завдання</button></li>
+            <li><button id="updateTask" class="button">Оновити завдання</button></li>
+            <li><button id="getSortedTaskStatus" class="button">Фільтр за статусом</button></li>
+            <li><button id="getSortedTaskByPriority" class="button">Фільтр за пріоритетом</button></li>
+            <li><button id="deadlineCheck" class="button">Перевірити дедлайн</button></li>
+          </ul>
+
+          <div id="array"></div>
+        </main>
+      </div>
+    </div>
+    <script type="module" src="./src/main.ts"></script>
   </body>
 </html>
+
+
+
+

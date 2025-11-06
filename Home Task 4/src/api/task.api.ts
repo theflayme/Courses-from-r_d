@@ -1,14 +1,14 @@
-import type { TaskType, TaskStatus, TaskPriority } from '../modules/task.type';
+import type { TaskType, TaskStatus, TaskPriority, UpdateTaskType } from '../modules/task.type';
 
 class ItemTaskManager {
     private url = 'http://localhost:3000/tasks'
 
-    async getTask(): Promise<TaskType[]> {
+    async getTasks(): Promise<TaskType[]> {
         const response = await fetch(this.url)
-        
         if(!response.ok){
-            console.log("Помилка при виклику API")
+            throw new Error(`Помилка: ${response.status} ${response.statusText}`);
         }
+
     
         const data: TaskType[] = await response.json();
         return data;
@@ -17,13 +17,18 @@ class ItemTaskManager {
     async getTaskById(id: number): Promise<TaskType> {
         const url = `${this.url}/${id}`
         const response = await fetch(url)
+
+        if(!response.ok){
+            throw new Error(`Помилка: ${response.status} ${response.statusText}`);
+        }
+
         return response.json();
     }
 
     async createTask (newTask: TaskType): Promise<TaskType> {
         
-        const taskList = await this.getTask();
-        const id = taskList.length + 3;
+        const taskList = await this.getTasks();
+        const id = taskList.length + 1;
         newTask.id = id.toString();
 
         const url = `${this.url}`
@@ -31,6 +36,11 @@ class ItemTaskManager {
             method: 'POST',
             body: JSON.stringify(newTask)
         })
+
+        if(!response.ok){
+            throw new Error(`Помилка: ${response.status} ${response.statusText}`);
+        }
+
         return response.json();
     }
 
@@ -39,6 +49,11 @@ class ItemTaskManager {
         const response = await fetch(url, {
             method: 'DELETE'
         })
+
+        if(!response.ok){
+            throw new Error(`Помилка: ${response.status} ${response.statusText}`);
+        }
+
         return response.json();
     }
 
@@ -47,7 +62,7 @@ class ItemTaskManager {
         priority?: TaskPriority,
         createdAt?: string
     }): Promise<TaskType[]> {
-        const taskList = await this.getTask();
+        const taskList = await this.getTasks();
         return taskList.filter(task => {
             return (
                 (filter.status ? task.status === filter.status: true) &&
@@ -67,12 +82,20 @@ class ItemTaskManager {
         return false;
     }
 
-    async updateTask(id: number, updatedTask: TaskType): Promise<TaskType> {
+    async updateTask(id: number, updatedTask: UpdateTaskType): Promise<TaskType> {
         const url = `${this.url}/${id}`
         const response = await fetch(url, {
             method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify(updatedTask)
         })
+
+        if(!response.ok){
+            throw new Error(`Помилка: ${response.status} ${response.statusText}`);
+        }
+
         return response.json();
     }
 }
