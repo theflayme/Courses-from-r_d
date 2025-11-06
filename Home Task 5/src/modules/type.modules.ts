@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-const taskStatus = ['todo', 'in_progress', 'done'] as const;
-const taskPriority = ['low', 'medium', 'high'] as const;
+export const taskStatus = ['todo', 'in_progress', 'done'] as const;
+export const taskPriority = ['low', 'medium', 'high'] as const;
 
 export const taskSchema = z.object({
   id: z.string().optional(),
@@ -11,10 +11,7 @@ export const taskSchema = z.object({
   status: z.enum(taskStatus, { message: 'Статус є обовʼязковим' }),
   priority: z.enum(taskPriority, { message: 'Пріоритет є обовʼязковим' }),
 
-  createdAt: z.coerce.date({ message: 'Дата створення є обовʼязковою' })
-    .refine((data) => data <= new Date(), {
-      message: 'Дата створення може бути датою  або датою сьогоднішнью або в минулому',
-    }),
+  createdAt: z.date().optional(),
 
   deadline: z.coerce.date({ message: 'Дата виконання є обовʼязковою' })
     .refine((data) => data >= new Date(), {

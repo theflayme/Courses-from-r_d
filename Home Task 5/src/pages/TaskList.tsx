@@ -1,6 +1,6 @@
-import fetchApi from "../api/fetchApi";
+import { itemTaskManager } from '../api/task.api';
 import { useState, useEffect } from "react";
-import { type Task } from "../utils/ValidationSchema";
+import { type Task } from "../modules/type.modules";
 
 import '../styles/TaskList.css';
 
@@ -9,7 +9,7 @@ const myTask = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
 
     useEffect(() => {
-        fetchApi.getTask().then(setTasks);
+        itemTaskManager.getTasks().then(setTasks);
     }, []);
     
     return (
@@ -23,8 +23,8 @@ const myTask = () => {
                         {task.status}
                     </span>
                     <span>
-                        {new Date(task.createdAt).toDateString()} –{" "}
-                        {new Date(task.deadline).toDateString()}
+                        {task.createdAt && new Date(task.createdAt).toDateString()} –{" "}
+                        {task.deadline && new Date(task.deadline).toDateString()}
                     </span>
                 </li>
             ))}
