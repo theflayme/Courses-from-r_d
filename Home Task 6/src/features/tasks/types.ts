@@ -11,9 +11,7 @@ export const taskSchema = z.object({
   status: z.enum(taskStatus, { message: 'Статус є обовʼязковим' }),
   priority: z.enum(taskPriority, { message: 'Пріоритет є обовʼязковим' }),
 
-  createdAt: z.coerce.date({ message: 'Дата створення є обовʼязковою' }).refine((data) => data <= new Date(), {
-    message: 'Дата створення може бути датою  або датою сьогоднішнью або в минулому',
-  }),
+  createdAt: z.date().default(new Date()),
 
   deadline: z.coerce.date({ message: 'Дата виконання є обовʼязковою' }).refine((data) => data >= new Date(), {
     message: 'Дата виконання не може бути менше дати сьогодні',
@@ -21,3 +19,7 @@ export const taskSchema = z.object({
 });
 
 export type Task = z.infer<typeof taskSchema>;
+
+export type CreateTask = Omit<Task, 'id | createdAt'>;
+
+

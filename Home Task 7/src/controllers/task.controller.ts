@@ -6,7 +6,12 @@ import { filterTaskList } from "../pages/task.pages";
 import { validateTask } from "../services/task.service.validation";
 
 export const getTasks = (req: Request, res: Response) => {
-    const { createdAt, status, priority } = req.query;
+    const {
+        createdAt,
+        status,
+        priority
+    } = req.query;
+    
     const filtered = filterTaskList(createdAt as string, status as string, priority as string);
     res.json(filtered);
 }

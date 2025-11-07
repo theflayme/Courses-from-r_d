@@ -1,86 +1,111 @@
-import { type TaskType } from "../types/task.types";
+import { type TaskType } from "../types/Task.types";
 import type { Request, Response } from "express";
-import { taskService } from "../services/task.service";
-import { filterTaskList } from "../pages/task.pages";
+import { filterTaskList, errorHandler } from "../pages/task.pages";
+import { Task } from "../models/Task.model";
+import { User } from "../models/User.model";
+import { handleTaskNotFound, handleTaskValidationError, handleUserNotFound, handleServerError } from "../pages/task.pages.errorHandler";
 
-import { validateTask } from "../services/task.service.validation";
-
-export const getTasks = (req: Request, res: Response) => {
-    const { createdAt, status, priority } = req.query;
-    const filtered = filterTaskList(createdAt as string, status as string, priority as string);
-    res.json(filtered);
+export const getTasks = async (req: Request, res: Response) => {
+    try {
+        const { createdAt, status, priority, userId } = req.query;
+        
+        if (userId) {
+            const tasks = await Task.findAll({
+                where: {
+                    userId: parseInt(userId as string)
+                }
+            });
+            res.json(tasks);
+            return;
+        }
+        
+        const filtered = await filterTaskList(createdAt as string, status as string, priority as string);
+        res.json(filtered);
+    } catch (error) {
+        handleServerError(res);
+    }
 }
 
-export const getTaskById = (req: Request, res: Response) => {
-    const { id } = req.params;
-    const task = filterTaskList().find(t => t.id === parseInt(id as string));
+export const getTaskById = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const task = await Task.findByPk(id);
 
-    if (!task) {
-        const error = new Error(`Задача з id ${id} не знайдена`);
-        res.status(404).json({ message: error.message });
-        return;
+        if (!task) {
+            handleTaskNotFound(id as string, res);
+            return;
+        }
+
+        res.json(task);
+    } catch (error) {
+        handleServerError(res);
     }
-
-    res.json(task);
 }
 
-export const createTask = (req: Request, res: Response) => {
-    const newTask: TaskType = req.body;
 
-    if(!newTask){
-        const error = new Error(`Задача не може бути створена`);
-        res.status(400).json({ message: error.message });
-        return;
+export const createTask = async (req: Request, res: Response) => {
+    try {
+        const newTask: TaskType = req.body;
+
+        if(!newTask || !newTask.title){
+            handleTaskValidationError(`Задача не може бути створена без назви`, res);
+            return;
+        }
+
+        if (!newTask.userId) {
+            handleTaskValidationError(`ID користувача не може бути пустим`, res);
+            return;
+        }
+
+        const user = await User.findByPk(newTask.userId);
+        if (!user) {
+            handleUserNotFound(newTask.userId, res);
+            return;
+        }
+
+        const createdTask = await Task.create(newTask);
+        res.status(201).json(createdTask);
+    } catch (error) {
+        handleServerError(res);
     }
-
-    const validationError = validateTask(newTask);
-    if (validationError) {
-        const error = new Error(`Задача не може бути створена з помилкою: ${validationError}`);
-        res.status(400).json({ message: error.message });
-        return;
-    }
-
-    taskService.push(newTask);
-    res.status(201).json(newTask);
 }
 
-export const updateTask = (req: Request, res: Response) => {
-    const { id } = req.params;
-    const updatedTask: TaskType = req.body;
-    const elementId = taskService.findIndex(t => t.id === parseInt(id as string));
+export const updateTask = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const updatedTask: TaskType = req.body;
+        const task = await Task.findByPk(id);
 
-    if(!updatedTask || elementId === -1){
-        const error = new Error(`Задача з id ${id} не знайдена`);
-        res.status(400).json({ message: error.message });
-        return;
+        if(!task){
+            handleTaskNotFound(id as string, res);
+            return;
+        }
+
+        if (updatedTask.id && updatedTask.id !== parseInt(id as string)) {
+            handleTaskValidationError(`ID задачі не можна змінювати`, res);
+            return;
+        }
+
+        await task.update(updatedTask);
+        const updatedTaskData = await Task.findByPk(id);
+        res.status(200).json(updatedTaskData);
+    } catch (error) {
+        handleServerError(res);
     }
-
-    if (updatedTask.id && updatedTask.id !== parseInt(id as string)) {
-        const error = new Error(`ID задачі не можна змінювати`);
-        res.status(400).json({ message: error.message });
-        return;
-    }
-
-    const validationError = validateTask(updatedTask);
-    if (validationError) {
-        const error = new Error(`Задача не може бути оновлена з помилкою: ${validationError}`);
-        res.status(400).json({ message: error.message });
-        return;
-    }
-
-    taskService[elementId] = { ...taskService[elementId], ...updatedTask };
-    res.status(200).json(updatedTask);  
 }
 
-export const deleteTask = (req: Request, res: Response) => {
-    const { id } = req.params;
-    const elementId = taskService.findIndex(t => t.id === parseInt(id as string));
-    if(elementId === -1){
-        const error = new Error(`Задача з id ${id} не знайдена`);
-        res.status(404).json({ message: error.message });
-        return;
-    }
+export const deleteTask = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const task = await Task.findByPk(id);
+        if(!task){
+            handleTaskNotFound(id as string, res);
+            return;
+        }
 
-    taskService.splice(elementId, 0);
-    res.status(200).json({ task: taskService[elementId], message: 'Задача видалена' });
+        await task.destroy();
+        res.status(200).json({task: task, message: 'Задача видалена' });
+    } catch (error) {
+        handleServerError(res);
+    }
 }

@@ -63,14 +63,21 @@ button:disabled{
   cursor: not-allowed;
 }
 
-.emptyState{
-    display: flex;
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-    height: 90vh;
-    font-size: 32px;
-    font-weight: bold;
-    color: white;
-    opacity: 0.1;
+
+
+.emptyState, .errorTextMessage{
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  opacity: 0.1;
+}
+
+.errorFormMessage{
+  color: rgb(232, 27, 27);
+  font-size: 14px;
 }

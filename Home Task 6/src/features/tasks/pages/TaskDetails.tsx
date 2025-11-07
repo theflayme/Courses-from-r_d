@@ -11,14 +11,13 @@ const TaskDetails = () => {
     const { task, error } = useAsyncTaskDetails(Number(id));
     const navigate = useNavigate();
 
-    if (error) return <div>{error.message}</div>;
-
     if (!task) {
         return <div className='emptyState'>Задача не знайдена</div>;
     }
 
     return (
     <>
+    {error && <p className='errorTextMessage'>{error.message}</p>}
         <div className='taskDetailsContainer'>
             <TaskDetailsList task={task} />
             <button onClick={() => navigate('/tasks')}>Назад</button>

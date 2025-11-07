@@ -1,7 +1,6 @@
+import type { Task, CreateTask } from "./types";
 
-import type { Task } from "./types";
-
-let tasks: Task[] = [
+const tasks: Task[] = [
   {
     id: 1,
     title: "Task 1",
@@ -96,20 +95,24 @@ let tasks: Task[] = [
 
 const Api = {
   async getTask(): Promise<Task[]> {
+    if (!tasks) {
+        throw new Error("Помилка при отриманні задач");
+    }
     return tasks;
   },
 
   async getTaskById(id: number): Promise<Task> {
     const foundTask = tasks.find((x) => x.id === id);
     if (!foundTask){
-        throw new Error("Задачі не знайдено");
+        throw new Error("Помилка при отриманні задачі");
     }
     return foundTask;
   },
 
-  async createTask(data: Omit<Task, 'id'>): Promise<Task> {
+  async createTask(data: CreateTask): Promise<Task> {
     const createdTask: Task = {
-        id: tasks.length + 1, ...data
+        id: tasks.length + 1,
+        ...data,
     };
 
     tasks.push(createdTask);
@@ -119,7 +122,7 @@ const Api = {
   async updateTask(id: number, data: Partial<Omit<Task, "id">>): Promise<Task> {
     const foundTask = tasks.findIndex((x) => x.id === id);
     if (foundTask === -1) {
-        throw new Error("Задачі не знайдено");
+        throw new Error("Помилка при оновленні задачі");
     }
 
     tasks[foundTask] = { ...tasks[foundTask], ...data };

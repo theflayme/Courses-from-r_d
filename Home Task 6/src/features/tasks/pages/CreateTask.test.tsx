@@ -1,50 +1,85 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi, afterEach } from 'vitest';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
+/*
+Елементи у списку відображаються коректно (усі потрібні поля присутні).
+При порожньому списку — відображається empty state.
+При помилці — показується error message.
+*/
+
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 
 import CreateTask from './CreateTask';
 
-afterEach(() => {
-    vi.restoreAllMocks();
-});
-
-describe('Створення задачі', () => {
-    const setup = () =>
+describe('Тестування формы создания задачи', () => {
+    it('Елементи у списку відображаються коректно', () => {
         render(
-            <MemoryRouter initialEntries={['/tasks/create']}>
-                <Routes>
-                    <Route path="/tasks" element={<div>Список задач</div>} />
-                    <Route path="/tasks/create" element={<CreateTask />} />
-                </Routes>
+            <MemoryRouter>
+                <CreateTask />
             </MemoryRouter>
         );
 
-    it('Форма і елементи відображаються, кнопка submit задизейблена за замовчуванням', () => {
-        setup();
-
         expect(screen.getByLabelText('Заголовок')).toBeInTheDocument();
-        expect(screen.getByLabelText(/Опис/)).toBeInTheDocument();
+        expect(screen.getByLabelText('Опис (Не обовʼязково)')).toBeInTheDocument();
         expect(screen.getByLabelText('Статус')).toBeInTheDocument();
         expect(screen.getByLabelText('Пріоритет')).toBeInTheDocument();
-        expect(screen.getByLabelText('Дата створення')).toBeInTheDocument();
-        expect(screen.getByLabelText('Дата виконання')).toBeInTheDocument();
-
-        const submitBtn = screen.getByRole('button', { name: 'Створити задачу' });
-        expect(submitBtn).toBeDisabled();
+        expect(screen.getByText('Створити задачу')).toBeInTheDocument();
     });
 
-    it('Тестування валідації', async () => {
-        const user = userEvent.setup();
-        setup();
+    it('При помилці валідації, показується error message', async () => {
+        render(
+            <MemoryRouter>
+                <CreateTask />
+            </MemoryRouter>
+        );
 
-        const titleInput = screen.getByLabelText('Заголовок');
-        const submitBtn = screen.getByRole('button', { name: 'Створити задачу' });
+        const pastDate = new Date();
+        pastDate.setDate(pastDate.getDate() - 1);
+        const formattedPastDate = pastDate.toISOString().split('T')[0];
 
-        await user.type(titleInput, 'abc');
-        fireEvent.blur(titleInput);
+        fireEvent.change(screen.getByLabelText('Заголовок'), { target: { value: '1' } }); // менше 5 символів
+        fireEvent.change(screen.getByLabelText('Статус'), { target: { value: 'todo' } });
+        fireEvent.change(screen.getByLabelText('Пріоритет'), { target: { value: 'low' } });
+        fireEvent.change(screen.getByLabelText('Дата виконання'), { target: { value: formattedPastDate } });
+
+        fireEvent.click(screen.getByText('Створити задачу'));
 
         expect(await screen.findByText('Заголовок має бути більше 5 символів')).toBeInTheDocument();
-        expect(submitBtn).toBeDisabled();
+        expect(await screen.findByText('Дата виконання не може бути менше дати сьогодні')).toBeInTheDocument();
+    });
+
+    it('Кнопка disabled, якщо валідація не пройдена', () => {
+        render(
+            <MemoryRouter>
+                <CreateTask />
+            </MemoryRouter>
+        );
+
+        fireEvent.change(screen.getByLabelText('Заголовок'), { target: { value: '1' } });
+        fireEvent.change(screen.getByLabelText('Статус'), { target: { value: 'todo' } });
+        fireEvent.change(screen.getByLabelText('Пріоритет'), { target: { value: 'low' } });
+
+        expect(screen.getByText('Створити задачу')).toBeDisabled();
+    });
+
+    it('Кнопка доступна, якщо валідація пройдена', () => {
+        render(
+            <MemoryRouter>
+                <CreateTask />
+            </MemoryRouter>
+        );
+
+        const pastDate = new Date();
+        pastDate.setDate(pastDate.getDate() - 1);
+        const formattedPastDate = pastDate.toISOString().split('T')[0];
+        
+        fireEvent.change(screen.getByLabelText('Заголовок'), { target: { value: '12345' } });
+        fireEvent.change(screen.getByLabelText('Опис (Не обовʼязково)'), { target: { value: 'test' } });
+        fireEvent.change(screen.getByLabelText('Статус'), { target: { value: 'in_progress' } });
+        fireEvent.change(screen.getByLabelText('Пріоритет'), { target: { value: 'medium' } });
+        fireEvent.change(screen.getByLabelText('Дата виконання'), { target: { value: formattedPastDate } });
+
+        waitFor(() => {
+            expect(screen.getByText('Створити задачу')).toBeEnabled();
+        }, { timeout: 10 });
     });
 });

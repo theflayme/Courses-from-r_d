@@ -6,7 +6,7 @@ import {
     CreateTask,
     TaskDetails,
     NotFound,
-} from "./features/tasks/pages/Pages";
+} from "./features/tasks/pages/Page";
 
 const router = createBrowserRouter([
     {

@@ -1,18 +1,18 @@
 import * as express from 'express';
 import {
-    createTask,
-    getTaskById,
     getTasks,
+    getTaskById,
+    createTask,
     updateTask,
     deleteTask
-} from '../controllers/task.controller';
+} from '../controllers/Task.controller';
 
 const app = express.Router();
 app.use(express.json());
 
+app.post("/", createTask);
 app.get("/", getTasks);
 app.get("/:id", getTaskById);
-app.post("/", createTask);
 app.put("/:id", updateTask);
 app.delete("/:id", deleteTask);
 

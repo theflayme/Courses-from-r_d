@@ -1,38 +1,42 @@
-// Елементи на сторінці деталей задачі відображаються коректно.
-// При відсутності задачі показується empty state.
-// Кнопка "Назад" переводить на сторінку списку задач.
+/*
+Елементи у списку відображаються коректно (усі потрібні поля присутні).
+При порожньому списку — відображається empty state.
+При помилці — показується error message.
+*/
 
-import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, vi, expect, afterEach } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import * as useAsyncHook from '../../../shared/hook/useAnyncTask';
-
-vi.mock('../../../shared/utils/dateFormat', () => ({
-    default: () => 'DATE',
-}));
 
 import TaskDetails from './TaskDetails';
+import type { Task } from '../types';
+import dateFormat from '../../../shared/utils/dateFormat';
 
-describe('Тестування деталей задачі', () => {
-    afterEach(() => {
-        vi.restoreAllMocks();
+import { useAsyncTaskDetails } from '../../../shared/hook/useAnyncTask';
+
+
+vi.mock('../../../shared/hook/useAnyncTask', () => ({
+  useAsyncTaskDetails: vi.fn(),
+}));
+
+describe('Тестування сторінки детального перегляду задачі', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
     });
 
-    it('Деталі задачі відображаються коректно', () => {
-        const mockCreatedAt = new Date('2024-01-01');
-        const mockDeadline = new Date('2024-01-02');
-        
-        vi.spyOn(useAsyncHook, 'useAsyncTaskDetails').mockReturnValue({
-            task: {
-                id: 1,
-                title: 'Task 1',
-                description: 'Description 1',
-                status: 'todo',
-                priority: 'low',
-                createdAt: mockCreatedAt,
-                deadline: mockDeadline,
-            },
-            error: undefined,
+    const mockTask = {
+        id: 1,
+        title: 'Test Task',
+        description: 'Test Description',
+        status: 'in_progress',
+        priority: 'medium',
+        createdAt: new Date('2024-01-01T00:00:00Z'),
+        deadline: new Date('2024-01-05T00:00:00Z'),
+    } as Task;
+
+    it('Елементи у списку відображаються коректно', () => {
+        (useAsyncTaskDetails as Mock).mockReturnValue({
+            task: mockTask,
         });
 
         render(
@@ -43,23 +47,22 @@ describe('Тестування деталей задачі', () => {
             </MemoryRouter>
         );
 
-        expect(screen.getByText('Task 1')).toBeInTheDocument();
-        expect(screen.getByText(/Опис:\s*Description 1/)).toBeInTheDocument();
-        expect(screen.getByText(/Статус:\s*todo/)).toBeInTheDocument();
-        expect(screen.getByText(/Пріоритет:\s*low/)).toBeInTheDocument();
-        expect(screen.getByText(/Дата створення:\s*DATE/)).toBeInTheDocument();
-        expect(screen.getByText(/Дата виконання:\s*DATE/)).toBeInTheDocument();
-        expect(screen.queryByText('Задача не знайдена')).not.toBeInTheDocument();
+        expect(screen.getByText(mockTask.title)).toBeInTheDocument();
+        expect(screen.getByText(`Опис: ${mockTask.description}`)).toBeInTheDocument();
+        expect(screen.getByText(`Статус: ${mockTask.status}`)).toBeInTheDocument();
+        expect(screen.getByText(`Пріоритет: ${mockTask.priority}`)).toBeInTheDocument();
+        expect(screen.getByText(`Дата створення: ${dateFormat(mockTask.createdAt)}`)).toBeInTheDocument();
+        expect(screen.getByText(`Дата виконання: ${dateFormat(mockTask.deadline)}`)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Назад' })).toBeInTheDocument();
     });
 
-    it('При відсутності задачі показується empty state', () => {
-        vi.spyOn(useAsyncHook, 'useAsyncTaskDetails').mockReturnValue({
+    it('При порожньому списку — відображається empty state', () => {
+        (useAsyncTaskDetails as Mock).mockReturnValue({
             task: undefined,
-            error: undefined,
         });
 
         render(
-            <MemoryRouter initialEntries={['/tasks/999']}>
+            <MemoryRouter initialEntries={['/tasks/2']}>
                 <Routes>
                     <Route path="/tasks/:id" element={<TaskDetails />} />
                 </Routes>
@@ -69,49 +72,20 @@ describe('Тестування деталей задачі', () => {
         expect(screen.getByText('Задача не знайдена')).toBeInTheDocument();
     });
 
-    it('При помилці показується error message', () => {
-        vi.spyOn(useAsyncHook, 'useAsyncTaskDetails').mockReturnValue({
-            task: undefined,
-            error: new Error('Помилка завантаження задачі'),
+    it('При помилці — показується error message', () => {
+        (useAsyncTaskDetails as Mock).mockReturnValue({
+            task: mockTask,
+            error: { message: 'Невідома помилка' },
         });
 
         render(
-            <MemoryRouter initialEntries={['/tasks/1']}>
+            <MemoryRouter initialEntries={['/tasks/3']}>
                 <Routes>
                     <Route path="/tasks/:id" element={<TaskDetails />} />
                 </Routes>
             </MemoryRouter>
         );
 
-        expect(screen.getByText('Помилка завантаження задачі')).toBeInTheDocument();
-    });
-
-    it('Кнопка "Назад" переводить на сторінку списку задач', () => {
-        const mockCreatedAt = new Date('2024-01-01');
-        const mockDeadline = new Date('2024-01-02');
-        
-        vi.spyOn(useAsyncHook, 'useAsyncTaskDetails').mockReturnValue({
-            task: {
-                id: 1,
-                title: 'Task 1',
-                description: 'Description 1',
-                status: 'todo',
-                priority: 'low',
-                createdAt: mockCreatedAt,
-                deadline: mockDeadline,
-            },
-            error: undefined,
-        });
-
-        render(
-            <MemoryRouter initialEntries={['/tasks/1']}>
-                <Routes>
-                    <Route path="/tasks/:id" element={<TaskDetails />} />
-                    <Route path="/tasks" element={<div>Список задач</div>} />
-                </Routes>
-            </MemoryRouter>
-        );
-
-        fireEvent.click(screen.getByText('Назад'));
+        expect(screen.getByText('Невідома помилка')).toBeInTheDocument();
     });
 });

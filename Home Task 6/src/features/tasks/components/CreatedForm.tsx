@@ -40,13 +40,7 @@ const CreatedForm = () => {
                 </select>
                 {errors.priority && <span className="errorTextMessage">{errors.priority.message}</span>}
             </div>
-            
-            <div className="formGroupItem">
-                <label>Дата створення</label>
-                <input {...register('createdAt', { required: true })} type="date" />
-                {errors.createdAt && <span className="errorTextMessage">{errors.createdAt.message}</span>}
-            </div>
-            
+                        
             <div className="formGroupItem">
                 <label>Дата виконання</label>
                 <input {...register('deadline', { required: true })} type="date" />
