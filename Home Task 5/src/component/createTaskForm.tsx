@@ -15,6 +15,7 @@ const CreateTaskForm = () => {
     const onSubmit = async (data: Task) => {
         const newTask = await itemTaskManager.createTask(data);
         console.log(newTask);
+        navigate('/TaskList');
     };
     
     return (
@@ -48,7 +49,7 @@ const CreateTaskForm = () => {
                             {errors.priority && <span className="errorTextMessage">{errors.priority.message}</span>}
                         </div>
                         <div className="formGroupItem">
-                            <label>Дата виконання</label>
+                            <label>Дедлайн:</label>
                             <input {...register('deadline', { required: true })} type="date" />
                             {errors.deadline && <span className="errorTextMessage">{errors.deadline.message}</span>}
                         </div>

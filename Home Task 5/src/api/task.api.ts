@@ -9,22 +9,24 @@ class ItemTaskManager {
             throw new Error(`Помилка: ${response.status} ${response.statusText}`);
         }
 
-    
         const data: Task[] = await response.json();
         return data;
     }
 
-    async createTask (newTask: Task): Promise<Task> {
-        
-        const taskList = await this.getTasks();
-        const id = taskList.length + 1;
-        newTask.id = id.toString();
-        newTask.createdAt = new Date();
-
+    async createTask (newTask: Task) {
         const url = `${this.url}`
+        
+        const task = {
+            ...newTask,
+            createdAt: new Date()
+        };
+        
         const response = await fetch(url, {
             method: 'POST',
-            body: JSON.stringify(newTask)
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(task),
         })
 
         if(!response.ok){
@@ -34,6 +36,5 @@ class ItemTaskManager {
         return response.json();
     }
 }
-
 
 export const itemTaskManager = new ItemTaskManager();
