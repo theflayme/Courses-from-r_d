@@ -6,6 +6,16 @@ const arrayContainer = document.getElementById('array') as HTMLDivElement;
 
 const errorElement = (text: string) => `<h3 style="color: red; text-align: center; padding-top: 20px;">${text}</h3>`;
 
+export function taskPayload(data: Record<string, unknown>): UpdateTaskType {
+  return {
+    title: data.title as string,
+    description: data.description as string,
+    status: data.status as TaskStatus,
+    priority: data.priority as TaskPriority,
+    deadline: new Date(data.deadline as string),
+  };
+}
+
 function setModal(modalId: string, isAction: boolean) {
   const modal = document.getElementById(modalId);
   const closeButton = document.getElementById(modalId + 'Close') as HTMLButtonElement; 
@@ -68,13 +78,7 @@ document.getElementById('createTaskForm')!.addEventListener('submit', (e) => {
   const formData = new FormData(e.target as HTMLFormElement);
   const data = Object.fromEntries(formData);
 
-  const newTask: UpdateTaskType = {
-    title: data.title as string,
-    description: data.description as string,
-    status: data.status as TaskStatus,
-    priority: data.priority as TaskPriority,
-    deadline: new Date(data.deadline as string),
-  }
+  const newTask = taskPayload(data);
 
   itemTaskManager.createTask(newTask).then(task => {
     const taskElement = createTaskElement(task);
@@ -90,7 +94,7 @@ document.getElementById('deleteTaskForm')!.addEventListener('submit', (e) => {
   const data = Object.fromEntries(formData);
   const id = data.id as string;
   
-  itemTaskManager.getTaskById(id).then(task => {
+  itemTaskManager.deleteTask(id).then(task => {
     const taskElement = createTaskElement(task);
     arrayContainer.innerHTML = `<table>${taskElement}</table>`;
     setModal('deleteModal', false);
@@ -102,13 +106,7 @@ document.getElementById('updateTaskForm')!.addEventListener('submit', (e) => {
   const formData = new FormData(e.target as HTMLFormElement);
   const data = Object.fromEntries(formData);
 
-  const updatedTask: UpdateTaskType = {
-    title: data.title as string,
-    description: data.description as string,
-    status: data.status as TaskStatus,
-    priority: data.priority as TaskPriority,
-    deadline: new Date(data.deadline as string),
-  };
+  const updatedTask = taskPayload(data);
   
   itemTaskManager.updateTask(data.id as string, updatedTask).then(task => {
     const taskElement = createTaskElement(task);
@@ -169,13 +167,7 @@ document.getElementById('deadlineCheckForm')!.addEventListener('submit', (e) => 
 
 document.getElementById('getTask')!.addEventListener('click', () => {
   itemTaskManager.getTasks().then(tasks => {
-    const taskElements = tasks.map(task => {
-
-      return `
-        ${createTaskElement(task)}
-      `;
-    }).join('');
-
+    const taskElements = tasks.map(createTaskElement).join('');
     arrayContainer.innerHTML = `<table>${taskElements}</table>`;
   });
 });

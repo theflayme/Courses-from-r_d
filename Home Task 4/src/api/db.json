@@ -1,15 +1,6 @@
 {
   "tasks": [
     {
-      "id": "1",
-      "title": "Complete project documentation",
-      "description": "Write comprehensive documentation for the project",
-      "status": "in_progress",
-      "priority": "high",
-      "deadline": "2025-02-15T10:00:00.000Z",
-      "createdAt": "2025-01-10T08:00:00.000Z"
-    },
-    {
       "id": "2",
       "title": "Review code changes",
       "description": "Review pull requests from team members",
@@ -89,6 +80,15 @@
       "priority": "medium",
       "deadline": "2025-02-16T10:30:00.000Z",
       "createdAt": "2025-01-19T18:20:00.000Z"
+    },
+    {
+      "id": "8385",
+      "title": "Повідомити про навчання",
+      "description": "Оплата за навчання",
+      "status": "in_progress",
+      "priority": "medium",
+      "deadline": "2025-11-11T10:03:00.000Z",
+      "createdAt": "2025-11-09T23:05:49.034Z"
     }
   ]
 }
