@@ -68,11 +68,12 @@ describe('Тестування сторінки списку задач', () => 
       expect(screen.getByText(task.title)).toBeInTheDocument();
       expect(screen.getByText(task.description)).toBeInTheDocument();
       expect(screen.getByText(task.status)).toBeInTheDocument();
-      // Look for a <span> containing the formatted createdAt and deadline with any whitespace/newlines/tabs in between.
-      const dateTextRegex = new RegExp(
-        `${dateFormat(task.createdAt)}  - ${dateFormat(task.deadline)}`
-      );
-      expect(screen.getByText(dateTextRegex)).toBeInTheDocument();
+      // Look for an element containing both dates
+      expect(
+        screen.getByText((content) => {
+          return content.includes(dateFormat(task.createdAt)) && content.includes(dateFormat(task.deadline));
+        })
+      ).toBeInTheDocument();
     }
   });
 

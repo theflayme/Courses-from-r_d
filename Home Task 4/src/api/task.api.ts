@@ -14,7 +14,7 @@ class ItemTaskManager {
         return data;
     }
 
-    async getTaskById(id: number): Promise<TaskType> {
+    async getTaskById(id: string): Promise<TaskType> {
         const url = `${this.url}/${id}`
         const response = await fetch(url)
 
@@ -25,16 +25,20 @@ class ItemTaskManager {
         return response.json();
     }
 
-    async createTask (newTask: TaskType): Promise<TaskType> {
-        
-        const taskList = await this.getTasks();
-        const id = taskList.length + 1;
-        newTask.id = id.toString();
-
+    async createTask (newTask: UpdateTaskType): Promise<TaskType> {
         const url = `${this.url}`
+        
+        const task = {
+            ...newTask,
+            createdAt: new Date()
+        };
+        
         const response = await fetch(url, {
             method: 'POST',
-            body: JSON.stringify(newTask)
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(task)
         })
 
         if(!response.ok){
@@ -44,7 +48,7 @@ class ItemTaskManager {
         return response.json();
     }
 
-    async deleteTask(id:number) {
+    async deleteTask(id:string) {
         const url = `${this.url}/${id}`
         const response = await fetch(url, {
             method: 'DELETE'
@@ -62,17 +66,18 @@ class ItemTaskManager {
         priority?: TaskPriority,
         createdAt?: string
     }): Promise<TaskType[]> {
-        const taskList = await this.getTasks();
+        const response =  await fetch(this.url);
+        const taskList: TaskType[] = await response.json();
         return taskList.filter(task => {
             return (
                 (filter.status ? task.status === filter.status: true) &&
                 (filter.priority ? task.priority === filter.priority: true) &&
-                (filter.createdAt ? task.createdAt === filter.createdAt: true)
+                (filter.createdAt ? new Date(task.createdAt) === new Date(filter.createdAt) : true)
             )
         });
     }
 
-    async deadlineCheck(id: number): Promise<boolean> {
+    async deadlineCheck(id: string): Promise<boolean> {
         const task = await this.getTaskById(id);
         if (task) {
             const deadlineTime = new Date(task.deadline);
@@ -82,7 +87,7 @@ class ItemTaskManager {
         return false;
     }
 
-    async updateTask(id: number, updatedTask: UpdateTaskType): Promise<TaskType> {
+    async updateTask(id: string, updatedTask: UpdateTaskType): Promise<TaskType> {
         const url = `${this.url}/${id}`
         const response = await fetch(url, {
             method: 'PATCH',

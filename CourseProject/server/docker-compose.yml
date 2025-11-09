@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: courseproject-mongo
+    restart: always
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_DATABASE: courseproject
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: .
+    container_name: courseproject-backend
+    restart: always
+    ports:
+      - '3000:3000'
+    depends_on:
+      - mongo
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+
+volumes:
+  mongo_data:

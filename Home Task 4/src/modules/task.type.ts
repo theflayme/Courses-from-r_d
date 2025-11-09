@@ -7,8 +7,8 @@ export type TaskType = {
     description: string;
     status: TaskStatus;
     priority: TaskPriority;
-    createdAt: string;
-    deadline: string;
+    createdAt: Date;
+    deadline: Date;
 }
 
 export type UpdateTaskType = Omit<TaskType, 'id' | 'createdAt'>;
