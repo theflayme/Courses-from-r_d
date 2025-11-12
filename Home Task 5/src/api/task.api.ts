@@ -14,7 +14,6 @@ class ItemTaskManager {
     }
 
     async createTask (newTask: Task) {
-
         const task = {
             ...newTask,
             createdAt: new Date()
