@@ -2,16 +2,7 @@
 export type TaskStatus = 'todo' | 'in_progress' | 'review' | 'done';
 export type TaskPriority = 'low' | 'medium' | 'high';
 
-export type Task = {
-  priority: string;
-  description: string;
-  id: string;
-  name: string;
-  createdAt: string; 
-  deadline: string | null;
-  column: string; 
-};
-
+// Розширений тип задачі з додатковими полями
 export type TaskType = {
   id: string;
   title: string;
@@ -20,10 +11,10 @@ export type TaskType = {
   priority: TaskPriority;
   createdAt: string;  
   updatedAt: string;
-  deadline?: string | null;
+  deadline?: string;
 }
 
-
+// Колонка з задачами
 export type Column = {
   id: TaskStatus;
   title: string;

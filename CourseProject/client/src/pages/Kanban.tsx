@@ -1,40 +1,24 @@
-'use client';
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, GripVertical, Plus } from 'lucide-react';
+import { COLUMNS_DEFAULT } from '@/components/Columns';
 import type { TaskType, TaskStatus, Column } from '@/types/task.type';
-
-const initialColumns: Column[] = [
-  { id: 'todo', title: 'To Do', color: '#D9D9D9', tasks: [] },
-  { id: 'in_progress', title: 'In Progress', color: '#66BCFF', tasks: [] },
-  { id: 'review', title: 'Review', color: '#FFA500', tasks: [] },
-  { id: 'done', title: 'Done', color: '#46AE9F', tasks: [] },
-];
+import useUpdate from '@/hooks/handleUpdate';
+import useFetchTasks from '@/hooks/useFetchTasks';
+import formatDate from '@/utils/formatDate';
 
 export default function KanbanBoard() {
-  const [columns, setColumns] = useState<Column[]>(initialColumns);
+  const [columns, setColumns] = useState<Column[]>(COLUMNS_DEFAULT);
+  const [Modal, setModal] = useState(false);
+  
+  useEffect(() => {
+    document.body.style.overflow = Modal ? 'hidden' : 'auto';
+    console.log('Modal open state changed:', Modal);
+  }, [Modal]);
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/task');
-        const tasks: TaskType[] = await response.json();
-
-        // Map tasks to their respective columns
-        const updatedColumns = initialColumns.map((column) => ({
-          ...column,
-          tasks: tasks.filter((task) => task.status === column.id),
-        }));
-
-        setColumns(updatedColumns);
-      } catch (error) {
-        console.error('Failed to fetch tasks:', error);
-      }
-    };
-
-    fetchTasks();
+    useFetchTasks({ setColumns });
   }, []);
 
   const handleDragStart = (e: React.DragEvent, task: TaskType, columnId: TaskStatus) => {
@@ -45,47 +29,40 @@ export default function KanbanBoard() {
     e.preventDefault();
   };
 
-  const updateTaskStatusOnServer = async (taskId: string, status: TaskStatus) => {
-    const res = await fetch(`http://localhost:3000/task/${taskId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status }),
-    });
-    if (!res.ok) {
-      throw new Error(`Failed to update task ${taskId} status`);
-    }
-    return (await res.json()) as TaskType;
-  };
+  const updateTaskStatusOnServer = useUpdate;
 
+  // Обробник скидання таски в новий стовпець
   const handleDrop = async (e: React.DragEvent, targetColumnId: TaskStatus) => {
     e.preventDefault();
     try {
+      // Отримуємо дані таски та початкового стовпця
       const data = JSON.parse(e.dataTransfer.getData('text/plain'));
       const { task, sourceColumnId } = data as { task: TaskType; sourceColumnId: TaskStatus };
-
+      
+      // Якщо таска скидається в той же стовпець, нічого не робимо
       if (sourceColumnId === targetColumnId) return;
-
+ 
       const prevColumns = columns;
 
-      // Optimistically update UI
+      // Локально оновлюємо стан для миттєвого відображення
       const newColumns = prevColumns.map((col) => {
         if (col.id === sourceColumnId) {
           return { ...col, tasks: col.tasks.filter((t) => t.id !== task.id) };
         }
+
         if (col.id === targetColumnId) {
           const moved = { ...task, status: targetColumnId };
           return { ...col, tasks: [...col.tasks, moved] };
         }
+        
         return col;
       });
 
       setColumns(newColumns);
 
       try {
-        // Send PUT to backend
+        // Оновлюємо статус таски на сервері
         const updated = await updateTaskStatusOnServer(task.id, targetColumnId);
-
-        // Replace moved task with server response (to sync timestamps etc.)
         setColumns((cols) =>
           cols.map((col) =>
             col.id === targetColumnId
@@ -93,21 +70,17 @@ export default function KanbanBoard() {
               : col,
           ),
         );
-      } catch (err) {
-        console.error('Failed to update task status on server:', err);
-        // Revert UI on failure
+      } catch (error) {
+        console.error('Failed to update task status on server:', error);
         setColumns(prevColumns);
       }
-    } catch {
-      // ignore parse errors
+    } catch (error) {
+      console.error('Failed to handle drop event:', error);
     }
   };
 
-  const formatDate = (iso?: string | null) =>
-    iso ? new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : null;
-
   return (
-    <div className="">
+    <>
       <div className="flex flex-row items-start justify-between gap-4">
         {columns.map((column) => (
           <div
@@ -120,7 +93,7 @@ export default function KanbanBoard() {
               <div className="flex items-center gap-3">
                 <div className="w-4 h-4 rounded-full " style={{ backgroundColor: column.color }} />
                 <h3 className="font-semibold text-neutral-900 dark:text-neutral-100">{column.title}</h3>
-                <Badge className="bg-neutral-100/80 dark:bg-neutral-800/80 text-neutral-800 dark:text-neutral-200 border-neutral-200/50 dark:border-neutral-600/50">
+                <Badge className="bg-neutral-100/80 dark:bg-neutral-800/80 text-neutral-800 dark:text-neutral-200 border-neutral-200/50 dark:border-neutral-600/50" style={{ minWidth: '1.5rem' }}>
                   {column.tasks.length}
                 </Badge>
               </div>
@@ -136,14 +109,21 @@ export default function KanbanBoard() {
                   className="cursor-move transition-all duration-300 border bg-white/60 dark:bg-neutral-800/60 backdrop-blur-sm hover:bg-white/70 dark:hover:bg-neutral-700/70"
                   draggable
                   onDragStart={(e) => handleDragStart(e, task, column.id)}
+                  onClick={() => {
+                    setSelectedTask(task);
+                    setModal(true);
+                  }}
                 >
                   <CardContent>
                     <div className="space-y-4">
                       <div className="flex items-start justify-between">
                         <div>
                           {task.status && (
-                            <Badge className={`mt-1 text-xs rounded-full`} style={{ backgroundColor: column.color, color: column.color !== '#D9D9D9' ? '#fff' : '#000' }}>
-                              {task.status.toUpperCase()}
+                            <Badge className={`mt-1 text-xs rounded-full mb-2`} style={
+                              {
+                                backgroundColor: column.color + '25',
+                                color: column.color }}>
+                              {task.status.toUpperCase().split('_').join(' ')}
                             </Badge>
                           )}
                           <h4 className="font-semibold text-neutral-900 dark:text-neutral-100 leading-tight">
@@ -162,14 +142,11 @@ export default function KanbanBoard() {
                       <div className="flex items-center justify-between pt-2 border-t border-neutral-200/30 dark:border-neutral-700/30">
                         <div className="flex items-center gap-4 text-neutral-600 dark:text-neutral-400">
                           {task.deadline && (
-                            <div className="flex items-center gap-1">
+                            <div className="flex gap-2">
                               <Calendar className="w-4 h-4" />
                               <span className="text-xs font-medium">{formatDate(task.deadline)}</span>
                             </div>
                           )}
-                          <div className="text-xs text-neutral-500 dark:text-neutral-400">
-                            Created: {formatDate(task.createdAt)}
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -180,6 +157,6 @@ export default function KanbanBoard() {
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 }

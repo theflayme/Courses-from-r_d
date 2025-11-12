@@ -14,14 +14,13 @@ class ItemTaskManager {
     }
 
     async createTask (newTask: Task) {
-        const url = `${this.url}`
-        
+
         const task = {
             ...newTask,
             createdAt: new Date()
         };
         
-        const response = await fetch(url, {
+        const response = await fetch(this.url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

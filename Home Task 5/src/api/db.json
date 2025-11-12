@@ -17,24 +17,6 @@
       "status": "in_progress",
       "priority": "high",
       "deadline": "2025-10-04T17:00:00Z"
-    },
-    {
-      "id": "4952",
-      "title": "22222",
-      "description": "",
-      "status": "in_progress",
-      "priority": "medium",
-      "deadline": "2025-11-10T00:00:00.000Z",
-      "createdAt": "2025-11-09T17:34:37.372Z"
-    },
-    {
-      "id": "0430",
-      "title": "11111",
-      "description": "111111",
-      "status": "in_progress",
-      "priority": "medium",
-      "deadline": "2025-11-17T00:00:00.000Z",
-      "createdAt": "2025-11-09T17:37:07.595Z"
     }
   ]
 }

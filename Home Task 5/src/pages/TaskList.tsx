@@ -4,7 +4,7 @@ import { type Task } from "../modules/type.modules";
 
 import '../styles/TaskList.css';
 
-const myTask = () => {
+const MyTask = () => {
 
     const [tasks, setTasks] = useState<Task[]>([]);
 
@@ -16,14 +16,13 @@ const myTask = () => {
         <div>
             <ul className="taskList">
             {tasks.map((task) => (
-                <li key={task.id} className="taskItem">
+                <li className="taskItem">
                     <h3>{task.title}</h3>
                     { task.description &&<p>{task.description}</p> }
                     <span className={ task.status === "todo" ? "todoStatus" : task.status === "in_progress" ? "inProgressStatus" : "doneStatus"}>
                         {task.status}
                     </span>
                     <span>
-                        {task.createdAt && new Date(task.createdAt).toDateString()} –{" "}
                         {task.deadline && new Date(task.deadline).toDateString()}
                     </span>
                 </li>
@@ -33,4 +32,4 @@ const myTask = () => {
     );
 }
 
-export default myTask;
+export default MyTask;
