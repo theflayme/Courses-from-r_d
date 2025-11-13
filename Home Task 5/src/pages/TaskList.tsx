@@ -1,6 +1,6 @@
 import { itemTaskManager } from '../api/task.api';
 import { useState, useEffect } from "react";
-import { type Task } from "../modules/type.modules";
+import { type Task } from "../modules/type.schema";
 
 import '../styles/TaskList.css';
 

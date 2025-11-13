@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { taskSchema, type Task } from "../modules/type.modules";
+import { taskSchema, type TaskFormData } from "../modules/type.schema";
 import { itemTaskManager } from "../api/task.api";
 import { useNavigate } from "react-router-dom";
 import '../styles/CreateTask.css';
@@ -13,7 +13,7 @@ const CreateTask = () => {
         mode: 'onTouched',
     });
 
-    const onSubmit = async (data: Task) => {
+    const onSubmit = async (data: TaskFormData) => {
         const newTask = await itemTaskManager.createTask(data);
         console.log(newTask);
         navigate('/task-list');

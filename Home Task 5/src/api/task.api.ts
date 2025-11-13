@@ -1,4 +1,4 @@
-import type { Task } from '../modules/type.modules';
+import type { Task, TaskFormData } from '../modules/type.schema';
 
 class ItemTaskManager {
     private url = 'http://localhost:3000/tasks'
@@ -13,10 +13,10 @@ class ItemTaskManager {
         return data;
     }
 
-    async createTask (newTask: Task) {
+    async createTask (newTask: TaskFormData) {
         const task = {
             ...newTask,
-            createdAt: new Date()
+            createdAt: new Date(),
         };
         
         const response = await fetch(this.url, {
