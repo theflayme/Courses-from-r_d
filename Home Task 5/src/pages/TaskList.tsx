@@ -16,14 +16,14 @@ const MyTask = () => {
         <div>
             <ul className="taskList">
             {tasks.map((task) => (
-                <li className="taskItem">
+                <li key={task.id} className="taskItem">
                     <h3>{task.title}</h3>
                     { task.description &&<p>{task.description}</p> }
                     <span className={ task.status === "todo" ? "todoStatus" : task.status === "in_progress" ? "inProgressStatus" : "doneStatus"}>
                         {task.status}
                     </span>
                     <span>
-                        {task.deadline && new Date(task.deadline).toDateString()}
+                        {new Date(task.createdAt).toDateString()} - {task.deadline && new Date(task.deadline).toDateString()}
                     </span>
                 </li>
             ))}

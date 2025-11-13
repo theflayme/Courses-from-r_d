@@ -16,4 +16,9 @@ export const taskSchema = z.object({
     }),
 });
 
-export type Task = z.infer<typeof taskSchema>;
+export type TaskFormData  = z.infer<typeof taskSchema>;
+
+export type Task = TaskFormData & {
+  id: string;
+  createdAt: Date;
+};
