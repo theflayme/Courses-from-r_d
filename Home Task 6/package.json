@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "test": "vitest --watch"
+    "test": "vitest --watch ",
+    "api": "json-server --watch src/db/server.json --port 3000"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

@@ -12,7 +12,7 @@
     font-weight: bold;
 }
 
-.taskDetailsDescription, .taskDetailsStatus, .taskDetailsPriority, .taskDetailsCreatedAt, .taskDetailsDeadline{
+.taskDetailsInfo{
     font-size: 20px;
     font-weight: normal;
     color: white;

@@ -2,7 +2,7 @@
 import TaskDetailsList from '../components/TaskDetailsList';
 
 import { useNavigate, useParams } from 'react-router-dom';
-import { useAsyncTaskDetails } from '../../../shared/hook/useAnyncTask';
+import useAsyncTaskDetails from '../../../shared/hook/useAsyncTaskDetails';
 
 import '../../../styles/TaskDetails.css';
 

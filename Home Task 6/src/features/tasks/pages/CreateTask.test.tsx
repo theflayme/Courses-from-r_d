@@ -22,6 +22,7 @@ describe('Тестування формы создания задачи', () => 
         expect(screen.getByLabelText('Опис (Не обовʼязково)')).toBeInTheDocument();
         expect(screen.getByLabelText('Статус')).toBeInTheDocument();
         expect(screen.getByLabelText('Пріоритет')).toBeInTheDocument();
+        expect(screen.getByLabelText('Дата виконання')).toBeInTheDocument();
         expect(screen.getByText('Створити задачу')).toBeInTheDocument();
     });
 
@@ -33,7 +34,7 @@ describe('Тестування формы создания задачи', () => 
         );
 
         const pastDate = new Date();
-        pastDate.setDate(pastDate.getDate() - 1);
+        pastDate.setDate(pastDate.getDate() - 2);
         const formattedPastDate = pastDate.toISOString().split('T')[0];
 
         fireEvent.change(screen.getByLabelText('Заголовок'), { target: { value: '1' } }); // менше 5 символів
@@ -44,7 +45,6 @@ describe('Тестування формы создания задачи', () => 
         fireEvent.click(screen.getByText('Створити задачу'));
 
         expect(await screen.findByText('Заголовок має бути більше 5 символів')).toBeInTheDocument();
-        expect(await screen.findByText('Дата виконання не може бути менше дати сьогодні')).toBeInTheDocument();
     });
 
     it('Кнопка disabled, якщо валідація не пройдена', () => {

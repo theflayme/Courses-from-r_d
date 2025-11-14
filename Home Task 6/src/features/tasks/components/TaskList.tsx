@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import type { Task } from '../types';
+import type { Task } from '../type.schema';
 import dateFormat from '../../../shared/utils/dateFormat';
 
 const CreatedTaskList = ({ tasks }: { tasks: Task[] }) => {

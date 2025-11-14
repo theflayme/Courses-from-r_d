@@ -8,11 +8,11 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 import TaskList from './TaskList';
-import { useAsyncTaskList } from '../../../shared/hook/useAnyncTask';
+import useAsyncTaskList from '../../../shared/hook/useAsyncTaskList';
 import dateFormat from '../../../shared/utils/dateFormat';
 
-vi.mock('../../../shared/hook/useAnyncTask', () => ({
-  useAsyncTaskList: vi.fn(),
+vi.mock('../../../shared/hook/useAsyncTaskList', () => ({
+  default: vi.fn(),
 }));
 
 describe('Тестування сторінки списку задач', () => {
@@ -65,15 +65,14 @@ describe('Тестування сторінки списку задач', () => 
     );
 
     for (const task of mockTasks) {
-      expect(screen.getByText(task.title)).toBeInTheDocument();
-      expect(screen.getByText(task.description)).toBeInTheDocument();
-      expect(screen.getByText(task.status)).toBeInTheDocument();
-      // Look for an element containing both dates
-      expect(
-        screen.getByText((content) => {
-          return content.includes(dateFormat(task.createdAt)) && content.includes(dateFormat(task.deadline));
-        })
-      ).toBeInTheDocument();
+
+      const taskItem = screen.getByText(task.title).closest("li");
+      expect(taskItem).not.toBeNull();
+
+      expect(taskItem).toHaveTextContent(task.description);
+      expect(taskItem).toHaveTextContent(task.status);
+      expect(taskItem).toHaveTextContent(dateFormat(task.createdAt));
+      expect(taskItem).toHaveTextContent(dateFormat(task.deadline));
     }
   });
 
@@ -94,20 +93,21 @@ describe('Тестування сторінки списку задач', () => 
     expect(screen.getByText('Задачі не знайдено')).toBeInTheDocument();
   });
 
-//   it('При помилці — показується error message', () => {
-//     (useAsyncTaskList as Mock).mockReturnValue({
-//       tasks: [],
-//       error: { message: 'Помилка при отриманні задач' },
-//     });
+  it('При помилці — показується error message', () => {
+    (useAsyncTaskList as Mock).mockReturnValue({
+      tasks: [],
+      error: { message: 'Невідома помилка' },
+    });
 
-//     render(
-//       <MemoryRouter initialEntries={['/tasks']}>
-//         <Routes>
-//           <Route path="/tasks" element={<TaskList />} />
-//         </Routes>
-//       </MemoryRouter>
-//     );
+    render(
+      <MemoryRouter initialEntries={['/tasks']}>
+        <Routes>
+          <Route path="/tasks" element={<TaskList />} />
+        </Routes>
+      </MemoryRouter>
+    );
 
-//     expect(screen.getByText('Помилка при отриманні задач')).toBeInTheDocument();
-//   });
+    expect(screen.getByText('Невідома помилка')).toBeInTheDocument();
+  });
+
 });

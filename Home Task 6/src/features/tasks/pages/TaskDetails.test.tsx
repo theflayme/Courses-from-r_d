@@ -9,14 +9,13 @@ import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
 
 import TaskDetails from './TaskDetails';
-import type { Task } from '../types';
+import type { Task } from '../type.schema';
 import dateFormat from '../../../shared/utils/dateFormat';
 
-import { useAsyncTaskDetails } from '../../../shared/hook/useAnyncTask';
+import useAsyncTaskDetails from '../../../shared/hook/useAsyncTaskDetails';
 
-
-vi.mock('../../../shared/hook/useAnyncTask', () => ({
-  useAsyncTaskDetails: vi.fn(),
+vi.mock('../../../shared/hook/useAsyncTaskDetails', () => ({
+  default: vi.fn(),
 }));
 
 describe('Тестування сторінки детального перегляду задачі', () => {
@@ -25,7 +24,7 @@ describe('Тестування сторінки детального перег�
     });
 
     const mockTask = {
-        id: 1,
+        id: "1",
         title: 'Test Task',
         description: 'Test Description',
         status: 'in_progress',

@@ -2,10 +2,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
 
-import { taskSchema, type Task } from "../types.ts";
-import Api from "../api.ts";
+import { taskSchema, type TaskFormData } from "../type.schema.ts";
 
 import '../../../styles/CreateTask.css';
+import { itemTaskManager } from "../api.ts";
 
 const CreateTask = () => {
     const navigate = useNavigate();
@@ -15,8 +15,8 @@ const CreateTask = () => {
         mode: 'onChange',
     });
 
-    const onSubmit = async (data: Task) => {
-        const newTask = await Api.createTask(data);
+    const onSubmit = async (data: TaskFormData) => {
+        const newTask = await itemTaskManager.createTask(data);
         console.log(newTask);
         navigate('/tasks');
     };
@@ -27,7 +27,7 @@ const CreateTask = () => {
                 <div className="formGroup">
                     <div className="formGroupItem">
                         <label htmlFor="title">Заголовок</label>
-                        <input id="title" {...register('title', { required: true })} />
+                        <input id="title" {...register('title')} />
                         {errors.title && <span className="errorFormMessage">{errors.title.message}</span>}
                     </div>
                     <div className="formGroupItem">
@@ -36,7 +36,7 @@ const CreateTask = () => {
                     </div>
                     <div className="formGroupItem">
                         <label htmlFor="status">Статус</label>
-                        <select id="status" {...register('status', { required: true })}>
+                        <select id="status" {...register('status')}>
                             <option value="todo">Todo</option>
                             <option value="in_progress">In Progress</option>
                             <option value="done">Done</option>
@@ -45,7 +45,7 @@ const CreateTask = () => {
                     </div>
                     <div className="formGroupItem">
                         <label htmlFor="priority">Пріоритет</label>
-                        <select id="priority" {...register('priority', { required: true })}>
+                        <select id="priority" {...register('priority')}>
                             <option value="low">Low</option>
                             <option value="medium">Medium</option>
                             <option value="high">High</option>
@@ -55,10 +55,9 @@ const CreateTask = () => {
 
                     <div className="formGroupItem">
                         <label htmlFor="deadline">Дата виконання</label>
-                        <input id="deadline" {...register('deadline', { required: true })} type="date" />
-                        {errors.deadline && <span className="errorTextMessage">{errors.deadline.message}</span>}
+                        <input id="deadline" {...register('deadline')} type="date" />
+                        {errors.deadline && <span className="errorFormMessage">{errors.deadline.message}</span>}
                     </div>
-
                         <button disabled={!isValid || isSubmitting} type="submit">Створити задачу</button>
                     </div>
             </form>

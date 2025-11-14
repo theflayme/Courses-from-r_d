@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { taskSchema } from "../types";
+import { taskSchema } from "../type.schema";
 
 const CreatedForm = () => {
     const { register, formState: { errors } } = useForm({
