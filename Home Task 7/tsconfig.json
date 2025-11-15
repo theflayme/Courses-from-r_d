@@ -9,8 +9,8 @@
     // See also https://aka.ms/tsconfig/module
     "module": "esnext",
     "target": "ES2020",
-    "moduleResolution": "node",
-    "types": [],
+    // "moduleResolution": "node",
+    // "types": [],
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -23,7 +23,7 @@
 
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    "exactOptionalPropertyTypes": false,
 
     // Style Options
     // "noImplicitReturns": true,
