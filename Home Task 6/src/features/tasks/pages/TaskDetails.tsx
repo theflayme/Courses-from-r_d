@@ -8,7 +8,7 @@ import '../../../styles/TaskDetails.css';
 
 const TaskDetails = () => {
     const { id } = useParams();
-    const { task, error } = useAsyncTaskDetails(Number(id));
+    const { task, error } = useAsyncTaskDetails(id);
     const navigate = useNavigate();
 
     if (!task) {

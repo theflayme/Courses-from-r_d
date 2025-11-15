@@ -9,7 +9,7 @@ const CreatedTaskList = ({ tasks }: { tasks: Task[] }) => {
         <>
             <ul className="taskList">
                 {tasks.map((task) => (
-                    <li key={task.id} className="taskItem" onClick={() => navigate(`/tasks/${task.id}`)}>
+                    <li key={task.id} className="taskItem" onClick={() => navigate(`/task/${task.id}`)}>
                         <h3>{task.title}</h3>
                         { task.description &&<p>{task.description}</p> }
                         <span className={task.status === "todo" ? "todoStatus" : task.status === "in_progress" ? "inProgressStatus" : "doneStatus"}>

@@ -13,7 +13,7 @@ class ItemTaskManager {
         return data;
     }
 
-    async getTaskById(id: number): Promise<Task> {
+    async getTaskById(id: string): Promise<Task> {
         const response = await fetch(`${this.url}/${id}`)
 
         if(!response.ok){
