@@ -12,7 +12,7 @@ const CreatedForm = () => {
         <>
             <div className="formGroupItem">
                 <label>Заголовок</label>
-                <input {...register('title', { required: true })} />
+                <input {...register('title')} />
                 {errors.title && <span className="errorTextMessage">{errors.title.message}</span>}
             </div>
             
@@ -23,7 +23,7 @@ const CreatedForm = () => {
             
             <div className="formGroupItem">
                 <label>Статус</label>
-                <select {...register('status', { required: true })}>
+                <select {...register('status')}>
                     <option value="todo">Todo</option>
                     <option value="in_progress">In Progress</option>
                     <option value="done">Done</option>
@@ -33,7 +33,7 @@ const CreatedForm = () => {
             
             <div className="formGroupItem">
                 <label>Пріоритет</label>
-                <select {...register('priority', { required: true })}>
+                <select {...register('priority')}>
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
                     <option value="high">High</option>
@@ -43,7 +43,7 @@ const CreatedForm = () => {
                         
             <div className="formGroupItem">
                 <label>Дата виконання</label>
-                <input {...register('deadline', { required: true })} type="date" />
+                <input {...register('deadline')} type="date" />
                 {errors.deadline && <span className="errorTextMessage">{errors.deadline.message}</span>}
             </div>
         </>
