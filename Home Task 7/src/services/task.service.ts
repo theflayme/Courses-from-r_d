@@ -85,7 +85,7 @@ export const taskService = {
     return task;
   },
 
-  update(id: string, patch: Partial<Omit<TaskType, "id" | "createdAt">>): TaskType {
+  update(id: string, patch: Partial<TaskFormData>): TaskType {
     const elementId = tasks.findIndex((t) => t.id === id);
 
     if (elementId === -1) {

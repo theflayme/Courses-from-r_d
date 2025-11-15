@@ -1,4 +1,4 @@
-import * as express from 'express';
+import express from 'express';
 import {
     createTask,
     deleteTask,
@@ -15,6 +15,5 @@ app.get("/:id", getTaskById);
 app.post("/", createTask);
 app.put("/:id", updateTask);
 app.delete("/:id", deleteTask);
-
 
 export default app;

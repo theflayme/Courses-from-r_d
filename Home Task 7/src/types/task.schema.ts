@@ -13,7 +13,7 @@ export const taskSchema = z.object({
   priority: z.enum(taskPriority, { message: 'Пріоритет є обовʼязковим' }),
 
   deadline: z.coerce.date().refine(
-    (data) => data >= new Date(new Date().setHours(0, 0, 0, 0)), 
+    (data) => data >= new Date, 
     { message: "Дата виконання не може бути меншою за сьогодні" }
   ),
 });
