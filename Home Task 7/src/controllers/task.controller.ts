@@ -11,8 +11,17 @@ export const getTasks = (req: Request, res: Response) => {
 
 export const getTaskById = (req: Request, res: Response) => {
   const { id } = req.params;
-  const task: TaskType = taskService.getById(String(id));
-  res.json(task);
+
+  if (!id) {
+    return res.status(400).json({ message: "ID завдання не вказано" });
+  }
+  
+  try {
+    const task: TaskType = taskService.getById(id);
+    res.json(task);
+  } catch (error) {
+    res.status(404).json({ message: "Завдання не знайдено" });
+  }
 }
 
 export const createTask = (req: Request, res: Response, next: NextFunction) => {
