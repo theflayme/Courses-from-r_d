@@ -38,7 +38,7 @@ const CreateTask = () => {
                         <label htmlFor="status">Статус</label>
                         <select id="status" {...register('status')}>
                             <option value="todo">Todo</option>
-                            <option value="in_progress">In Progress</option>
+                            <option value="in_progress">InProgress</option>
                             <option value="done">Done</option>
                         </select>
                         {errors.status && <span className="errorFormMessage">{errors.status.message}</span>}
