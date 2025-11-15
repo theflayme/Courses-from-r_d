@@ -36,11 +36,15 @@ export const updateTask = (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const result = taskSchema.partial().safeParse(req.body);
 
+    if (!id)  {
+      return next(new Error("ID завдання не вказано"));
+    }
+
     if (!result.success) {
       return next(result.error);
     }
 
-    const updatedTask = taskService.update(String(id), result.data);
+    const updatedTask = taskService.update(id, result.data);
     res.json(updatedTask);  
   } catch (error) {
     next(error);
@@ -51,7 +55,11 @@ export const deleteTask = (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
 
-    taskService.delete(String(id));
+    if (!id) {
+      return next(new Error("ID завдання не вказано"));
+    }
+    
+    taskService.delete(id);
 
     const tasks = taskService.list();
 
