@@ -1,6 +1,5 @@
 import type { ErrorRequestHandler } from "express";
 import { ZodError } from "zod";
-import { HttpError } from "../services/task.service";
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   // Помилки Zod → 400

@@ -3,7 +3,6 @@ import type { Request, Response, NextFunction } from "express";
 import { taskSchema, type TaskType } from "../types/task.schema";
 import { taskService } from "../services/task.service";
 
-
 export const getTasks = (req: Request, res: Response) => {
   const filters = req.query;
   const tasks: TaskType[] = taskService.list(filters);
