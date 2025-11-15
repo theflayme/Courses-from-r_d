@@ -5,7 +5,7 @@ const connectDB = async () => {
     const conn = await mongoose.connect("mongodb://mongo:27017/courseproject");
     console.log(`Підлючено до бази даних: ${conn.connection.host}`);
   } catch (error) {
-    console.error(`Error: ${error}`);
+    console.error(`Помилка: ${error}`);
     process.exit(1);
   }
 };

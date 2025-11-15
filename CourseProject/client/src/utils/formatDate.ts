@@ -1,11 +1,10 @@
-const formatDate = (date: string) => {
-    const options: Intl.DateTimeFormatOptions = {
+function formatDate(actualDate: Date): string {
+    const date = new Date(actualDate);
+    return date.toLocaleDateString('uk-UA', {
+        year: 'numeric',
         month: 'short',
-        day: '2-digit',
-        year: 'numeric'
-    };
-
-    return new Date(date).toLocaleDateString(undefined, options);
+        day: 'numeric'
+    });
 }
 
 export default formatDate;

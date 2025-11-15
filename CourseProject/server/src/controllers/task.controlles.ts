@@ -7,15 +7,29 @@ import {
     deleteTaskService 
 } from "../services/task.service";
 
+// GET /task
 export const getTasks = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const tasks = await getTasksService(req.query as Record<string, undefined>);
+        const { id, status, priority, createdAt } = req.query;
+
+        const tasks = await getTasksService({
+            id: id ? String(id) : undefined,
+            status: status ? String(status) : undefined,
+            priority: priority ? String(priority) : undefined,
+            createdAt: createdAt ? String(createdAt) : undefined
+        });
+
+        if (id && tasks.length === 0) {
+            return res.status(404).json({ message: "Задача не знайдена" });
+        }
+
         res.status(200).json(tasks);
     } catch (err) {
         errorHandler(err, req, res, next);
     }
 };
 
+// POST /tasks
 export const createTask = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const newTask = await createTaskService(req.body);
@@ -43,6 +57,7 @@ export const updateTask = async (req: Request, res: Response, next: NextFunction
     }
 };
 
+// DELETE /tasks/:id
 export const deleteTask = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
 

@@ -3,19 +3,17 @@ import z from 'zod'
 
 // Zod-схема для валідації
 export const taskValidationSchema = z.object({
-  userID: z.string(),
   title: z.string().min(5),
   description: z.string().optional(),
   status: z.enum(['todo', 'in_progress', 'review', 'done']),
   priority: z.enum(['low', 'medium', 'high']),
-  deadline: z.coerce.date().optional(),
+  deadline: z.string(),
 });
 
 export type TaskType = z.infer<typeof taskValidationSchema>;
 
 // Типізація для Mongoose
 export type ITask = Document & {
-  userID: string;
   title: string;
   description?: string;
   status: 'todo' | 'in_progress' | 'review' | 'done';
@@ -27,7 +25,6 @@ export type ITask = Document & {
 
 // Схема Mongoose
 const taskSchemaDB = new Schema<ITask>({
-  userID: { type: String, required: true },
   title: { type: String, required: true, minlength: 5 },
   description: { type: String },
   status: { type: String, enum: ['todo', 'in_progress', 'review', 'done'], default: 'todo' },
@@ -39,7 +36,6 @@ const taskSchemaDB = new Schema<ITask>({
         transform(ret) {
             return {
                 id: ret._id,
-                userID: ret.userID,
                 title: ret.title,
                 description: ret.description,
                 status: ret.status,
