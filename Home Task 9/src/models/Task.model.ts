@@ -1,6 +1,6 @@
 import { Table, Column, Model, DataType, ForeignKey } from 'sequelize-typescript';
 import { User } from './User.model';
-import { type TaskType, TaskStatus, TaskPriority } from '../types/Task.types';
+import type { TaskType, TaskStatus, TaskPriority } from '../types/Task.types';
 
 @Table({
   tableName: 'tasks',
@@ -21,9 +21,6 @@ export class Task extends Model<TaskType> {
 
   @Column(DataType.STRING)
   priority!: TaskPriority;
-
-  @Column(DataType.DATE)
-  createdAt!: Date;
 
   @Column(DataType.DATE)
   deadline!: Date;
