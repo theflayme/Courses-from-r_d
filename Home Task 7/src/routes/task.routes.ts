@@ -6,14 +6,17 @@ import {
     getTasks,
     updateTask,
 } from '../controllers/task.controller';
+import validateRequestBody from '../middleware/validateRequestBody';
+import validateGetTasksQuery from '../middleware/validateGetTasksQuery';
+import validateUpdateTask from '../middleware/validateUpdateTask';
 
 const app = express.Router();
 app.use(express.json());
 
-app.get("/", getTasks);
-app.get("/:id", getTaskById);
-app.post("/", createTask);
-app.put("/:id", updateTask);
-app.delete("/:id", deleteTask);
+app.get("/", validateGetTasksQuery ,getTasks);
+app.get("/:id", validateGetTasksQuery, getTaskById);
+app.post("/" , validateRequestBody, createTask);
+app.put("/:id", validateUpdateTask, updateTask);
+app.delete("/:id", validateGetTasksQuery, deleteTask);
 
 export default app;

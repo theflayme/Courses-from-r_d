@@ -9,10 +9,10 @@ export type TaskPriority = typeof taskPriority[number];
 export const taskSchema = z.object({
   title: z.string().min(5, 'Заголовок має бути більше 5 символів'),
   description: z.string().optional(),
-  status: z.enum(taskStatus, { message: 'Статус є обовʼязковим' }),
-  priority: z.enum(taskPriority, { message: 'Пріоритет є обовʼязковим' }),
+  status: z.enum(taskStatus, { message: `Статус повинен містити в собі одне з наступних значень: ${taskStatus.join(", ")}` }),
+  priority: z.enum(taskPriority, { message: `Пріоритет повинен містити в собі одне з наступних значень: ${taskPriority.join(", ")}` }),
 
-  deadline: z.coerce.date().refine(
+  deadline: z.coerce.date({ message: "Дедлайн повинен бути обов'язковим" }).refine(
     (data) => data >= new Date, 
     { message: "Дата виконання не може бути меншою за сьогодні" }
   ),
@@ -25,11 +25,13 @@ export type TaskType = TaskFormData & {
   createdAt: Date;
 };
 
-export type FilterTaskType = {
-  createdAt?: string;
-  status?: string;
-  priority?: string;
-};
+export const filterTaskType = z.object({
+  createdAt: z.string({message: "Дата створення повинна бути рядком"}).optional(),
+  status: z.enum(taskStatus, { message: `Статус повинен містити в собі одне з наступних значень: ${taskStatus.join(", ")}` }).optional(),
+  priority: z.enum(taskPriority, { message: `Пріоритет повинен містити в собі одне з наступних значень: ${taskPriority.join(", ")}` }).optional(),
+});
+
+export type FilterTaskType = z.infer<typeof filterTaskType>;
 
 export type ErrorMessageType = {
   status: number;

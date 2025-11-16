@@ -1,7 +1,6 @@
 import { randomUUID } from "crypto";
 
 import type { TaskFormData, TaskType, FilterTaskType } from "../types/task.schema";
-import HttpError from "../utils/httpError";
 
 // In-memory сховище завдань
 const tasks: TaskType[] = [
@@ -56,24 +55,20 @@ export const taskService = {
 
   getById(id: string): TaskType {
     const task = tasks.find((t) => t.id === id);
-
+  
     if (!task) {
-      throw new HttpError(404, `Задача з id ${id} не знайдена`);
+      throw new Error("Завдання не знайдено");
     }
-
+    
     return task;
   },
 
   create(input: TaskFormData): TaskType {
     const createdAt = new Date();
 
-    const inputTask: TaskFormData = {
-      ...input,
-    };
-
     const task: TaskType = {
       id: randomUUID(),
-      ...inputTask,
+      ...input,
       createdAt
     };
 
@@ -83,12 +78,8 @@ export const taskService = {
 
   update(id: string, patch: Partial<TaskFormData>): TaskType {
     const elementId = tasks.findIndex((t) => t.id === id);
-
-    if (elementId === -1) {
-      throw new HttpError(404, `Задача з id ${id} не знайдена`);
-    }
-
-    const updatedTask = {...tasks[elementId], ...patch} as TaskType;
+    
+    const updatedTask = {...tasks[elementId], ...patch};
 
     tasks[elementId] = updatedTask;
     return updatedTask;
@@ -96,10 +87,6 @@ export const taskService = {
 
   delete(id: string): void {
     const elementId = tasks.findIndex((t) => t.id === id);
-
-    if (elementId === -1) {
-      throw new HttpError(404, `Задача з id ${id} не знайдена`);
-    }
 
     tasks.splice(elementId, 1);
   }

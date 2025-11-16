@@ -1,13 +1,15 @@
 import type { Request, Response, NextFunction } from "express";
 
-import { taskSchema, type TaskType } from "../types/task.schema";
+import { taskSchema, type FilterTaskType, type TaskType } from "../types/task.schema";
 import { taskService } from "../services/task.service";
 
 // GET /tasks
 export const getTasks = (req: Request, res: Response) => {
-  const filters = req.query;
-  const tasks: TaskType[] = taskService.list(filters);
-  res.json(tasks);
+  const filters = req.query as FilterTaskType;
+
+  const tasks = taskService.list(filters);
+
+  return res.json(tasks);
 }
 
 // GET /tasks/:id
@@ -27,19 +29,12 @@ export const getTaskById = (req: Request, res: Response) => {
 }
 
 // POST /tasks
-export const createTask = (req: Request, res: Response, next: NextFunction) => {
+export const createTask = async (req: Request, res: Response) => {
   try {
-    const result = taskSchema.safeParse(req.body);
-
-    if (!result.success) {
-      return next(result.error);
-    }
-
-    const newTask = taskService.create(result.data);
-    res.status(201).json(newTask);
-
+    const newTask = await taskService.create(req.body);
+    return res.status(201).json(newTask);
   } catch (error) {
-    next(error);
+    return res.status(500).json({ message: "Помилка при створенні завдання" });
   }
 };
 
