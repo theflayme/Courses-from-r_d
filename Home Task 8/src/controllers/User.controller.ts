@@ -1,7 +1,8 @@
-import { User } from '../models/User.model';
-import type { Request, Response } from 'express';
-import type { UpdateUserType } from '../types/User.types';
-import { handleUserNotFound, handleServerError, handleTaskValidationError } from '../pages/task.pages.errorHandler';
+import type { Request, Response } from "express";
+
+import { User } from "../models/User.model";
+import { handleTaskValidationError, handleUserNotFound, handleServerError } from "../middlewares/ErrorHandler";
+import type { UserDataType } from "../types/User.types";
 
 export const getUserById = async (req: Request, res: Response) => {
     try {
@@ -9,7 +10,7 @@ export const getUserById = async (req: Request, res: Response) => {
         const user = await User.findByPk(id);
 
         if (!user) {
-            handleUserNotFound(parseInt(id as string), res);
+            handleUserNotFound(Number(id), res);
             return;
         }
 
@@ -47,13 +48,11 @@ export const getUsers = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const updatedUser: UpdateUserType = req.body;
+        const updatedUser: UserDataType = req.body;
         const user = await User.findByPk(id);
 
-        console.log(user);
-
         if (!user) {
-            handleUserNotFound(parseInt(id as string), res);
+            handleUserNotFound(Number(id), res);
             return;
         }
 
@@ -68,8 +67,9 @@ export const deleteUser = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const user = await User.findByPk(id);
+        
         if (!user) {
-            handleUserNotFound(parseInt(id as string), res);
+            handleUserNotFound(Number(id), res);
             return;
         }
 

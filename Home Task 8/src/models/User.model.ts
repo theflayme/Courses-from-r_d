@@ -1,10 +1,11 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
-import type { UserType } from '../types/User.types';
+import type { UserDataType } from '../types/User.types';
 
 @Table({
   tableName: 'users',
 })
-export class User extends Model<UserType> {
+
+export class User extends Model<UserDataType> {
   @Column(DataType.STRING)
   name!: string;
 

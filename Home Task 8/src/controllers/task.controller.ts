@@ -1,9 +1,12 @@
-import { type TaskType } from "../types/Task.types";
 import type { Request, Response } from "express";
-import { filterTaskList, errorHandler } from "../pages/task.pages";
+
 import { Task } from "../models/Task.model";
 import { User } from "../models/User.model";
-import { handleTaskNotFound, handleTaskValidationError, handleUserNotFound, handleServerError } from "../pages/task.pages.errorHandler";
+
+import { type TaskDataType, type TaskType } from "../types/Task.types";
+
+import { filterTaskList } from "../utils/FilterTaskList";
+import { handleTaskNotFound, handleTaskValidationError, handleServerError } from "../middlewares/ErrorHandler";
 
 export const getTasks = async (req: Request, res: Response) => {
     try {
@@ -45,22 +48,20 @@ export const getTaskById = async (req: Request, res: Response) => {
 
 export const createTask = async (req: Request, res: Response) => {
     try {
-        const newTask: TaskType = req.body;
-
-        if(!newTask || !newTask.title){
-            handleTaskValidationError(`Задача не може бути створена без назви`, res);
-            return;
-        }
+        const newTask: TaskDataType = req.body;
 
         if (!newTask.userId) {
-            handleTaskValidationError(`ID користувача не може бути пустим`, res);
-            return;
+            return handleTaskValidationError(`ID користувача не може бути пустим`, res);
         }
+        
+        if (!newTask.title) {
+            return handleTaskValidationError(`Задача не може бути створена без назви`, res);
+        }
+
 
         const user = await User.findByPk(newTask.userId);
         if (!user) {
-            handleUserNotFound(newTask.userId, res);
-            return;
+            return handleTaskValidationError(`Користувач з ID ${newTask.userId} не існує`, res);
         }
 
         const createdTask = await Task.create(newTask);
@@ -81,7 +82,7 @@ export const updateTask = async (req: Request, res: Response) => {
             return;
         }
 
-        if (updatedTask.id && updatedTask.id !== parseInt(id as string)) {
+        if (updatedTask.id && updatedTask.id !== (id)) {
             handleTaskValidationError(`ID задачі не можна змінювати`, res);
             return;
         }
@@ -98,13 +99,20 @@ export const deleteTask = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
         const task = await Task.findByPk(id);
+        
+        if(!id){
+            handleTaskValidationError(`ID задачі не може бути пустим`, res);
+            return;
+        }
+
         if(!task){
-            handleTaskNotFound(id as string, res);
+            handleTaskNotFound(id, res);
             return;
         }
 
         await task.destroy();
-        res.status(200).json({task: task, message: 'Задача видалена' });
+        const tasks = await Task.findAll();
+        res.status(200).json({message: `Задача з ID:${id} видалена`, task: tasks});
     } catch (error) {
         handleServerError(res);
     }

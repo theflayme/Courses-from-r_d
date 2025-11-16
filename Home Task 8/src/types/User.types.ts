@@ -1,9 +1,13 @@
 import type { User } from "../models/User.model";
 
 
-export type UserType = {
+export type UserDataType = {
     name: string;
     email: string;
 };
 
-export type UpdateUserType = Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>>;
+export type UserType = User & {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+};

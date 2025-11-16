@@ -5,7 +5,7 @@ export const filterTaskList = async (createdAt?: string, status?: string, priori
     let filtered = [...tasks];
     
     if (createdAt) {
-        filtered = filtered.filter(t => t.createdAt.toISOString().startsWith(createdAt));
+        filtered = filtered.filter(t => t.createdAt.startsWith(createdAt));
     }
 
     if (status) {

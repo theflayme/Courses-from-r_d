@@ -11,8 +11,6 @@ const sequelize = new Sequelize({
   username: 'postgres',
   password: 'qwerty',
   models: [User, Task],
-  // Отключаем шум логов в тестах
-  logging: process.env.NODE_ENV === 'test' ? false : console.log,
 });
 
 export default sequelize;
