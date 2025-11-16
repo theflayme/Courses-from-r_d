@@ -1,4 +1,4 @@
-import express, { type NextFunction, type Request, type Response } from 'express';
+import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 

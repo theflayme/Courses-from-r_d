@@ -1,5 +1,7 @@
-import type { TaskFormData, TaskType, FilterTaskType } from "../types/task.schema";
 import { randomUUID } from "crypto";
+
+import type { TaskFormData, TaskType, FilterTaskType } from "../types/task.schema";
+import HttpError from "../utils/httpError";
 
 // In-memory сховище завдань
 const tasks: TaskType[] = [
@@ -7,7 +9,7 @@ const tasks: TaskType[] = [
     id: "1",
     title: "Прибрати кімнату",
     description: "Помити підлогу, витерти пил",
-    status: "todo",
+    status: "in_progress",
     priority: "medium",
     createdAt: new Date(),
     deadline: new Date()
@@ -23,27 +25,25 @@ const tasks: TaskType[] = [
   }
 ];
 
-export class HttpError extends Error {
-  constructor(
-    public status: number,
-    public message: string
-  ) {
-    super(message);
-  }
-}
 
 export function filterTask(task: TaskType, filters: FilterTaskType) {
-  if (filters.createdAt && 
-      new Date(task.createdAt).toISOString() !== new Date(filters.createdAt).toISOString()) {
+  const { status, priority, createdAt } = filters;
+
+  if (createdAt) {
+    const filterDate = new Date(createdAt);
+    const taskDate = task.createdAt;
+
+    if (taskDate !== filterDate){
+      return false;
+    }
+  }
+
+  if (status && task.status !== status) {
     return false;
   }
 
-  if (filters.status && task.status !== filters.status) {
-    return false;
-  }
-
-  if (filters.priority && task.priority !== filters.priority) {
-    return false;
+  if (priority && task.priority !== priority) {
+    return false; 
   }
 
   return true;
@@ -68,16 +68,12 @@ export const taskService = {
     const createdAt = new Date();
 
     const inputTask: TaskFormData = {
-      title: input.title,
-      description: input.description,
-      status: input.status,
-      priority: input.priority,
-      deadline: input.deadline
+      ...input,
     };
 
     const task: TaskType = {
-      ...inputTask,
       id: randomUUID(),
+      ...inputTask,
       createdAt
     };
 
@@ -92,10 +88,7 @@ export const taskService = {
       throw new HttpError(404, `Задача з id ${id} не знайдена`);
     }
 
-    const updatedTask = {
-      ...tasks[elementId], 
-      ...patch
-    } as TaskType;
+    const updatedTask = {...tasks[elementId], ...patch} as TaskType;
 
     tasks[elementId] = updatedTask;
     return updatedTask;

@@ -3,12 +3,14 @@ import type { Request, Response, NextFunction } from "express";
 import { taskSchema, type TaskType } from "../types/task.schema";
 import { taskService } from "../services/task.service";
 
+// GET /tasks
 export const getTasks = (req: Request, res: Response) => {
   const filters = req.query;
   const tasks: TaskType[] = taskService.list(filters);
   res.json(tasks);
 }
 
+// GET /tasks/:id
 export const getTaskById = (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -24,6 +26,7 @@ export const getTaskById = (req: Request, res: Response) => {
   }
 }
 
+// POST /tasks
 export const createTask = (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = taskSchema.safeParse(req.body);
@@ -40,6 +43,7 @@ export const createTask = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+// PUT /tasks/:id
 export const updateTask = (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
@@ -60,6 +64,7 @@ export const updateTask = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+// DELETE /tasks/:id
 export const deleteTask = (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
