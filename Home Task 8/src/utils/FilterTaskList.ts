@@ -1,4 +1,4 @@
-import { Task } from "../models/Task.model";
+import { Task } from "../models/task.model";
 
 export const filterTaskList = async (createdAt?: string, status?: string, priority?: string) => {
     const tasks = await Task.findAll();

@@ -3,9 +3,8 @@ import morgan from 'morgan';
 import cors from 'cors';
 import sequelize from './db';
 
-import { errorHandler } from './middlewares/ErrorHandler';
-import userRoutes from './routes/User.routes';
-import taskRoutes from './routes/Task.routes';
+import userRoutes from './routes/user.routes';
+import taskRoutes from './routes/task.routes';
 
 export const app = express();
 const PORT = 3000
@@ -21,8 +20,6 @@ app.use(morgan('dev'));
 
 app.use('/users', userRoutes);
 app.use('/tasks', taskRoutes);
-
-app.use(errorHandler);
 
 sequelize.authenticate()
   .then(() => console.log('Підключено до бази даних'))

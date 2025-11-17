@@ -1,28 +1,23 @@
 import request from 'supertest';
 import { app } from '../server';
-import { setupTestDb, teardownTestDb } from '../utils/Test-db';
-import { User } from '../models/User.model';
-import { Task } from '../models/Task.model';
-import { beforeAll, afterAll, beforeEach, describe, it, expect } from '@jest/globals';
+import sequelize from '../db';
+import { User } from '../models/user.model';
+import { Task } from '../models/task.model';
 
 beforeAll(async () => {
-  await setupTestDb();
+  await sequelize.sync({ force: true });
 });
 
 beforeEach(async () => {
-  await Task.destroy({ where: {}, truncate: true, cascade: true });
-  await User.destroy({ where: {}, truncate: true, cascade: true });
+  await Task.destroy({ where: {}, truncate: true, restartIdentity: true });
+  await User.destroy({ where: {}, truncate: true, restartIdentity: true });
 });
 
 afterAll(async () => {
-  await teardownTestDb();
+  await sequelize.close();
 });
 
 describe('Тестування бази даних', () => {
-  beforeEach(async () => {
-    await User.destroy({ where: {}, truncate: true, cascade: true });
-  });
-
   it('База даних створена', async () => {
     const res = await request(app).get('/users');
     expect(res.status).toBe(200);
@@ -52,6 +47,8 @@ describe('Тестування API задач', () => {
       title: 'Test Task',
       description: 'Test Description',
       status: 'todo',
+      priority: 'medium',
+      deadline: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
       userId: userId,
     });
 
@@ -71,6 +68,8 @@ describe('Тестування API задач', () => {
     const res = await request(app).post('/tasks').send({
       description: 'Desc',
       status: 'todo',
+      priority: 'medium',
+      deadline: new Date(),
       userId: userId,
     });
 
@@ -82,6 +81,8 @@ describe('Тестування API задач', () => {
       title: 'Task',
       description: 'Desc',
       status: 'todo',
+      priority: 'medium',
+      deadline: new Date(),
       userId: 999999,
     });
 
@@ -93,6 +94,8 @@ describe('Тестування API задач', () => {
       title: 'Task 1',
       description: 'Desc',
       status: 'todo',
+      priority: 'low',
+      deadline: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
       userId: userId,
     });
 
@@ -112,12 +115,18 @@ describe('Тестування API задач', () => {
       title: 'Old Title',
       description: 'Old',
       status: 'todo',
+      priority: 'medium',
+      deadline: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
       userId: userId,
     });
 
     const res = await request(app)
       .put(`/tasks/${create.body.id}`)
-      .send({ title: 'New Title', status: 'done' });
+      .send({
+        title: 'New Title',
+        description: 'New Desc',
+        status: 'done',
+      });
 
     expect(res.status).toBe(200);
     expect(res.body.title).toBe('New Title');
@@ -126,7 +135,6 @@ describe('Тестування API задач', () => {
 
   it('PUT /tasks/:id (не існує) -> 404', async () => {
     const res = await request(app).put('/tasks/999999').send({
-      title: 'New',
       status: 'done',
     });
 
@@ -138,6 +146,8 @@ describe('Тестування API задач', () => {
       title: 'Delete me',
       description: 'Bye',
       status: 'todo',
+      priority: 'medium',
+      deadline: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
       userId: userId,
     });
 
@@ -153,7 +163,7 @@ describe('Тестування API задач', () => {
     expect(res.status).toBe(404);
   });
 
-  it('GET /tasks?userId=:id -> повертає задачі конкретного користувача', async () => {
+  it('GET /tasks?status -> повертає задачі конкретного користувача', async () => {
     const user2 = await request(app)
       .post('/users')
       .send({ name: 'User 2', email: 'user2@test.com' });
@@ -162,6 +172,8 @@ describe('Тестування API задач', () => {
       title: 'Task 1',
       description: 'Desc 1',
       status: 'todo',
+      priority: 'low',
+      deadline: new Date(),
       userId: userId,
     });
 
@@ -169,6 +181,8 @@ describe('Тестування API задач', () => {
       title: 'Task 2',
       description: 'Desc 2',
       status: 'done',
+      priority: 'medium',
+      deadline: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
       userId: userId,
     });
 
@@ -176,13 +190,15 @@ describe('Тестування API задач', () => {
       title: 'Task U2',
       description: 'Desc 3',
       status: 'todo',
+      priority: 'low',
+      deadline: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
       userId: user2.body.id,
     });
 
-    const res = await request(app).get(`/tasks?userId=${userId}`);
+    const res = await request(app).get(`/tasks?status=done`);
 
     expect(res.status).toBe(200);
-    expect(res.body).toHaveLength(2);
-    expect(res.body.every((t: any) => t.userId === userId)).toBe(true);
+    expect(res.body).toHaveLength(1);
+    expect(res.body.every((t: { status: string; }) => t.status === 'done')).toBe(true);
   });
 });

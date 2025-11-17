@@ -1,28 +1,40 @@
 import { Table, Column, Model, DataType, ForeignKey } from 'sequelize-typescript';
-import { User } from './User.model';
-import type { TaskDataType, TaskStatus, TaskPriority } from '../types/Task.types';
+import { User } from './user.model';
+import type { TaskFormData, TaskStatus, TaskPriority } from '../types/task.types';
 
 @Table({
   tableName: 'tasks',
 })
+export class Task extends Model<TaskFormData> {
 
-export class Task extends Model<TaskDataType> {
   @ForeignKey(() => User)
-  @Column(DataType.INTEGER)
+  @Column({
+    type: DataType.INTEGER,
+  })
   userId!: number;
 
-  @Column(DataType.STRING)
+  @Column({
+    type: DataType.STRING,
+  })
   title!: string;
 
-  @Column(DataType.STRING)
+  @Column({
+    type: DataType.STRING,
+  })
   description!: string;
 
-  @Column(DataType.STRING)
+  @Column({
+    type: DataType.STRING,
+  })
   status!: TaskStatus;
 
-  @Column(DataType.STRING)
+  @Column({
+    type: DataType.STRING,
+  })
   priority!: TaskPriority;
 
-  @Column(DataType.DATE)
+  @Column({
+    type: DataType.DATE,
+  })
   deadline!: Date;
 }

@@ -1,7 +1,7 @@
 // src/db.ts
 import { Sequelize } from 'sequelize-typescript';
-import { User } from './models/User.model';
-import { Task } from './models/Task.model';
+import { User } from './models/user.model';
+import { Task } from './models/task.model';
 
 const sequelize = new Sequelize({
   dialect: 'postgres',

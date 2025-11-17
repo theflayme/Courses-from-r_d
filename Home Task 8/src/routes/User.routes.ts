@@ -5,7 +5,7 @@ import {
     getUserById,
     getUsers,
     updateUser,
-} from '../controllers/User.controller';
+} from '../controllers/user.controller';
 
 const app = express.Router();
 app.use(express.json());
