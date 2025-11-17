@@ -4,6 +4,8 @@ import sequelize from '../db';
 import { User } from '../models/user.model';
 import { Task } from '../models/task.model';
 
+type TaskDto = { status: string };
+
 beforeAll(async () => {
   await sequelize.sync({ force: true });
 });
@@ -199,6 +201,6 @@ describe('Тестування API задач', () => {
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveLength(1);
-    expect(res.body.every((t: { status: string; }) => t.status === 'done')).toBe(true);
+    expect(res.body.every((task: TaskDto) => task.status === 'done')).toBe(true);
   });
 });
