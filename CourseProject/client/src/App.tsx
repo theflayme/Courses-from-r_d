@@ -4,9 +4,9 @@ import { RouterProvider } from 'react-router-dom';
 function App() {
   return (
     <>
-        <RouterProvider router={routerProvider} />
+      <RouterProvider router={routerProvider} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

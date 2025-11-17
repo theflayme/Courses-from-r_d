@@ -1,6 +1,6 @@
 type MongooseValidationError = Error & {
-  name: "Помилка валідації";
+  name: 'Помилка валідації';
   errors: Record<string, { message: string }>;
-}
+};
 
-export default MongooseValidationError
+export default MongooseValidationError;

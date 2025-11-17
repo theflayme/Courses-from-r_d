@@ -1,5 +1,5 @@
 const API_URL = {
-  baseURL: "http://localhost:3000",
+  baseURL: 'http://localhost:3000',
 
   url(path: string) {
     return this.baseURL + path;
@@ -7,10 +7,10 @@ const API_URL = {
 
   endpoints: {
     tasks: {
-      base: "/task",
-      byId: (id: string) в=> `/task/${id}`,
+      base: '/task',
+      byId: (id: string) => `/task/${id}`,
     },
   },
-}
+};
 
 export default API_URL;

@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -139,7 +139,7 @@
   padding: 30px 0px;
   display: flex;
   flex-direction: column;
-  max-width: 70rem;
+  max-width: 90rem;
 }
 
 body {
