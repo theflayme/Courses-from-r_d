@@ -27,7 +27,7 @@ export type TaskType = TaskFormData & {
 };
 
 export const filterTaskType = z.object({
-  createdAt: z.string({message: "Дата створення повинна бути рядком"}).optional(),
+  createdAt: z.coerce.date({message: "Дата створення повинна бути вказана датою. Приклад: \"2025-11-18\""}).optional(),
   status: z.enum(taskStatus, { message: `Статус повинен містити в собі одне з наступних значень: ${taskStatus.join(", ")}` }).optional(),
   priority: z.enum(taskPriority, { message: `Пріоритет повинен містити в собі одне з наступних значень: ${taskPriority.join(", ")}` }).optional(),
 });

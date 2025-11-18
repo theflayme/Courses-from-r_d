@@ -5,6 +5,7 @@ import sequelize from './db';
 
 import userRoutes from './routes/user.routes';
 import taskRoutes from './routes/task.routes';
+import errorHandler from './middlewares/errorHandler';
 
 export const app = express();
 const PORT = 3000
@@ -20,6 +21,8 @@ app.use(morgan('dev'));
 
 app.use('/users', userRoutes);
 app.use('/tasks', taskRoutes);
+
+app.use(errorHandler);
 
 sequelize.authenticate()
   .then(() => console.log('Підключено до бази даних'))

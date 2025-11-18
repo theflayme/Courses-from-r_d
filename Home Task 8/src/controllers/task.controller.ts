@@ -1,80 +1,101 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 
 import { Task } from "../models/task.model";
 import { User } from "../models/user.model";
-
-import { type TaskFormData, type TaskType } from "../types/task.types";
-
+import type { FilterTaskType, TaskFormData } from "../types/task.types";
+import { AppError } from "../utils/AppError";
 import { filterTaskList } from "../utils/FilterTaskList";
 
-export const getTasks = async (req: Request, res: Response) => {
-    const { createdAt, status, priority, userId } = req.query;
-    
-    if (userId) {
-        const tasks = await Task.findAll({
-            where: {
-                userId: parseInt(userId as string)
-            }
-        });
-        res.json(tasks);
-        return;
-    }
-    
-    const filtered = await filterTaskList(createdAt as string, status as string, priority as string);
-    res.json(filtered);
-}
+// GET /tasks
+export const getTasks = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const filters = (res.locals.validatedQuery || {}) as FilterTaskType;
 
-export const getTaskById = async (req: Request, res: Response) => {
+    const hasFilters = typeof filters.createdAt || typeof filters.status || typeof filters.priority;
+
+    if (hasFilters) {
+      const tasks = await filterTaskList(filters);
+      return res.status(200).json(tasks);
+    }
+
+    const tasks = await Task.findAll();
+    return res.status(200).json(tasks);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /tasks/:id
+export const getTaskById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
     const { id } = req.params;
     const task = await Task.findByPk(id);
-    
+
     if (!task) {
-        res.status(404).json({ error: `Задача з ID:${id} не знайдена` });
-        return;
+      return next(new AppError("Завдання не знайдено", 404));
     }
-    
-    res.json(task);
-}
+
+    return res.status(200).json(task);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// POST /tasks
+export const createTask = async (req: Request<unknown, unknown, TaskFormData>, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req.body;
+
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return next(new AppError("Користувача з таким id не існує", 400));
+    }
+
+    const newTask = await Task.create(req.body);
+    return res.status(201).json(newTask);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// PUT /tasks/:id
+export const updateTask = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const task = await Task.findByPk(id);
+
+    if (!task) {
+      return next(new AppError("Завдання не знайдено", 404));
+    }
+
+    await task.update(req.body);
+    return res.status(200).json(task);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// DELETE /tasks/:id
+export const deleteTask = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const task = await Task.findByPk(id);
+
+    if (!task) {
+      return next(new AppError("Завдання не знайдено", 404));
+    }
+
+    await task.destroy();
+    const tasks = await Task.findAll();
+
+    return res.status(200).json({
+      message: "Завдання видалено",
+      task: tasks,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 
-export const createTask = async (req: Request, res: Response) => {
-        const newTask: TaskFormData = req.body;
-        const user = await User.findByPk(newTask.userId);
-
-        if (!user) {
-            res.status(400).json({ error: `Користувача з ID:${newTask.userId} не існує` });
-            return;
-        }
-
-        const createdTask = await Task.create(newTask);
-        res.status(201).json(createdTask);
-}
-
-export const updateTask = async (req: Request, res: Response) => {
-        const { id } = req.params;
-        const updatedTask: TaskType = req.body;
-        const task = await Task.findByPk(id);
-
-        if (!task) {
-            res.status(404).json({ error: `Задача з ID:${id} не знайдена` });
-            return;
-        }
-
-        await task.update(updatedTask);
-        const updatedTaskData = await Task.findByPk(id);
-        res.status(200).json(updatedTaskData);
-}
-
-export const deleteTask = async (req: Request, res: Response) => {
-        const { id } = req.params;
-        const task = await Task.findByPk(id);
-
-        if(!task){
-            res.status(404).json({ error: `Задача з ID:${id} не знайдена` });
-            return;
-        }
-
-        await task.destroy();
-        const tasks = await Task.findAll();
-        res.status(200).json({message: `Задача з ID:${id} видалена`, task: tasks});
-}

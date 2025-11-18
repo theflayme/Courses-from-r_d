@@ -1,20 +1,20 @@
 import { Task } from "../models/task.model";
+import type { FilterTaskType } from "../types/task.types";
 
-export const filterTaskList = async (createdAt?: string, status?: string, priority?: string) => {
-    const tasks = await Task.findAll();
-    let filtered = [...tasks];
-    
-    if (createdAt) {
-        filtered = filtered.filter(t => t.createdAt.startsWith(createdAt));
-    }
+export const filterTaskList = async (filters: FilterTaskType) => {
+  const where: Record<string, unknown> = {};
 
-    if (status) {
-        filtered = filtered.filter(t => t.status === status);
-    }
+  if (filters.createdAt) {
+    where.createdAt = filters.createdAt;
+  }
 
-    if (priority) {
-        filtered = filtered.filter(t => t.priority === priority);
-    }
+  if (filters.status) {
+    where.status = filters.status;
+  }
 
-    return filtered;
-}
+  if (filters.priority) {
+    where.priority = filters.priority;
+  }
+
+  return Task.findAll({ where });
+};

@@ -6,11 +6,12 @@ import {
     getUsers,
     updateUser,
 } from '../controllers/user.controller';
+import validateUserBody from '../middlewares/validateUserBody';
 
 const app = express.Router();
 app.use(express.json());
 
-app.post("/", createUser);
+app.post("/", validateUserBody, createUser);
 app.get("/", getUsers);
 app.get("/:id", getUserById);
 app.put("/:id", updateUser);
