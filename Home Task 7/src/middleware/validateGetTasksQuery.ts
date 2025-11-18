@@ -5,7 +5,7 @@ const validateGetTasksQuery = (req: Request, res: Response, next: NextFunction) 
   const result = filterTaskType.safeParse(req.query);
 
   if (!result.success) {
-    return res.status(40).json({
+    return res.status(400).json({
       error: "Помилка валідації параметрів запиту",
       details: result.error.issues.map((e) => ({
         position: e.path.join("."),

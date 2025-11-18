@@ -1,11 +1,11 @@
 import type { Request, Response, NextFunction } from "express";
 
-import { taskSchema, type FilterTaskType, type TaskType } from "../types/task.schema";
+import { taskSchema, type TaskType } from "../types/task.schema";
 import { taskService } from "../services/task.service";
 
 // GET /tasks
 export const getTasks = (req: Request, res: Response) => {
-  const filters = req.query as FilterTaskType;
+  const filters = req.query;
 
   const tasks = taskService.list(filters);
 
@@ -15,10 +15,6 @@ export const getTasks = (req: Request, res: Response) => {
 // GET /tasks/:id
 export const getTaskById = (req: Request, res: Response) => {
   const { id } = req.params;
-
-  if (!id) {
-    return res.status(400).json({ message: "ID завдання не вказано" });
-  }
   
   try {
     const task: TaskType = taskService.getById(id);
@@ -44,10 +40,6 @@ export const updateTask = (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const result = taskSchema.partial().safeParse(req.body);
 
-    if (!id)  {
-      return next(new Error("ID завдання не вказано"));
-    }
-
     if (!result.success) {
       return next(result.error);
     }
@@ -63,16 +55,13 @@ export const updateTask = (req: Request, res: Response, next: NextFunction) => {
 export const deleteTask = (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
+    const deletedTask = taskService.delete(id);
 
-    if (!id) {
-      return next(new Error("ID завдання не вказано"));
+    if (!deletedTask) {
+      return res.status(404).json({ message: "Завдання не знайдено"});
     }
-    
-    taskService.delete(id);
 
-    const tasks = taskService.list();
-
-    return res.status(200).json({ message: "Видалено задачу з ID " + id, tasks });
+    res.status(200).json(deletedTask);
   } catch (error) {
     next(error);
   }

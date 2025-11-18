@@ -28,13 +28,8 @@ const tasks: TaskType[] = [
 export function filterTask(task: TaskType, filters: FilterTaskType) {
   const { status, priority, createdAt } = filters;
 
-  if (createdAt) {
-    const filterDate = new Date(createdAt);
-    const taskDate = task.createdAt;
-
-    if (taskDate !== filterDate){
-      return false;
-    }
+  if (createdAt && task.createdAt!== createdAt) {
+    return false;
   }
 
   if (status && task.status !== status) {
@@ -85,9 +80,12 @@ export const taskService = {
     return updatedTask;
   },
 
-  delete(id: string): void {
+  delete(id: string) {
     const elementId = tasks.findIndex((t) => t.id === id);
+    console.log(elementId);
 
-    tasks.splice(elementId, 1);
+    if (elementId === -1) return null;
+
+    return tasks.splice(elementId, 1)[0];
   }
 };
