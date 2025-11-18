@@ -1,12 +1,9 @@
+import { Op } from "sequelize";
 import { Task } from "../models/task.model";
 import type { FilterTaskType } from "../types/task.types";
 
 export const filterTaskList = async (filters: FilterTaskType) => {
   const where: Record<string, unknown> = {};
-
-  if (filters.createdAt) {
-    where.createdAt = filters.createdAt;
-  }
 
   if (filters.status) {
     where.status = filters.status;
@@ -14,6 +11,14 @@ export const filterTaskList = async (filters: FilterTaskType) => {
 
   if (filters.priority) {
     where.priority = filters.priority;
+  }
+
+  if (filters.createdAt) {
+    const date = new Date(filters.createdAt);
+
+    where.createdAt = {
+      [Op.gte]: date
+    };
   }
 
   return Task.findAll({ where });

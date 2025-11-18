@@ -1,24 +1,14 @@
-import type { NextFunction, Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
+import type { TaskFormData, FilterTaskType } from "../types/task.types";
 
-import { Task } from "../models/task.model";
-import { User } from "../models/user.model";
-import type { FilterTaskType, TaskFormData } from "../types/task.types";
-import { AppError } from "../utils/AppError";
-import { filterTaskList } from "../utils/FilterTaskList";
+import { taskService } from "../services/task.service";
 
 // GET /tasks
-export const getTasks = async (req: Request, res: Response, next: NextFunction) => {
+export const getTasks = async (req: Request<FilterTaskType>, res: Response, next: NextFunction) => {
   try {
-    const filters = (res.locals.validatedQuery || {}) as FilterTaskType;
-
-    const hasFilters = typeof filters.createdAt || typeof filters.status || typeof filters.priority;
-
-    if (hasFilters) {
-      const tasks = await filterTaskList(filters);
-      return res.status(200).json(tasks);
-    }
-
-    const tasks = await Task.findAll();
+    const filters = res.locals.validatedQuery;
+    const tasks = await taskService.getTasks(filters);
+    
     return res.status(200).json(tasks);
   } catch (error) {
     next(error);
@@ -28,12 +18,7 @@ export const getTasks = async (req: Request, res: Response, next: NextFunction) 
 // GET /tasks/:id
 export const getTaskById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
-    const task = await Task.findByPk(id);
-
-    if (!task) {
-      return next(new AppError("Завдання не знайдено", 404));
-    }
+    const task = await taskService.getTaskById(req.params.id);
 
     return res.status(200).json(task);
   } catch (error) {
@@ -42,17 +27,11 @@ export const getTaskById = async (req: Request, res: Response, next: NextFunctio
 };
 
 // POST /tasks
-export const createTask = async (req: Request<unknown, unknown, TaskFormData>, res: Response, next: NextFunction) => {
+export const createTask = async (
+  req: Request<{}, TaskFormData>, res: Response, next: NextFunction) => {
   try {
-    const { userId } = req.body;
+    const newTask = await taskService.createTask(req.body);
 
-    const user = await User.findByPk(userId);
-
-    if (!user) {
-      return next(new AppError("Користувача з таким id не існує", 400));
-    }
-
-    const newTask = await Task.create(req.body);
     return res.status(201).json(newTask);
   } catch (error) {
     next(error);
@@ -62,15 +41,9 @@ export const createTask = async (req: Request<unknown, unknown, TaskFormData>, r
 // PUT /tasks/:id
 export const updateTask = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
-    const task = await Task.findByPk(id);
+    const updated = await taskService.updateTask(req.params.id, req.body);
 
-    if (!task) {
-      return next(new AppError("Завдання не знайдено", 404));
-    }
-
-    await task.update(req.body);
-    return res.status(200).json(task);
+    return res.status(200).json(updated);
   } catch (error) {
     next(error);
   }
@@ -79,23 +52,10 @@ export const updateTask = async (req: Request, res: Response, next: NextFunction
 // DELETE /tasks/:id
 export const deleteTask = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
-    const task = await Task.findByPk(id);
-
-    if (!task) {
-      return next(new AppError("Завдання не знайдено", 404));
-    }
-
-    await task.destroy();
-    const tasks = await Task.findAll();
-
-    return res.status(200).json({
-      message: "Завдання видалено",
-      task: tasks,
-    });
+    const response = await taskService.deleteTask(req.params.id);
+    
+    return res.status(200).json(response);
   } catch (error) {
     next(error);
   }
 };
-
-

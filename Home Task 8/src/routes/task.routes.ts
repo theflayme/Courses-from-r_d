@@ -13,7 +13,7 @@ import validateGetTasksQuery from '../middlewares/validateGetTasksQuery';
 const app = express.Router();
 app.use(express.json());
 
-app.post("/", validateRequestBody ,createTask);
+app.post("/", validateRequestBody , createTask);
 app.get("/", validateGetTasksQuery ,getTasks);
 app.get("/:id", getTaskById);
 app.put("/:id", validateUpdateTask, updateTask);

@@ -1,54 +1,58 @@
-import type { NextFunction, Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
+import { userService } from "../services/user.service";
 
-import { User } from "../models/user.model";
-import type { UserDataType } from "../types/user.types";
-import { AppError } from "../utils/AppError";
+export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const users = await userService.getUsers();
+
+    res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
+    const user = await userService.getUserById(id);
 
-  const user = await User.findByPk(id);
-
-  if (!user) {
-    return next(new AppError(`Користувача з id ${id} не знайдено`, 404));
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
   }
-
-  res.status(200).json(user);
 };
 
-export const createUser = async (req: Request,res: Response, next: NextFunction) => {
-  const { name, email } = req.body as UserDataType;
+export const createUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { name, email } = req.body;
+    const user = await userService.createUser({ name, email });
 
-  const user = await User.create({ name, email });
-  res.status(201).json(user);
-};
-
-export const getUsers = async (req: Request, res: Response,next: NextFunction) => {
-  const users = await User.findAll();
-  res.status(200).json(users);
+    res.status(201).json(user);
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
-  const updatedUser: Partial<UserDataType> = req.body;
-  const user = await User.findByPk(id);
+  try {
+    const { id } = req.params;
+    const updatedUser = await userService.updateUser(id, req.body);
 
-  if (!user) {
-    return next(new AppError(`Користувача з id ${id} не знайдено`, 404));
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    next(error);
   }
-
-  await user.update(updatedUser);
-  res.status(200).json(user);
 };
 
 export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
-  const { id } = req.params;
-  const user = await User.findByPk(id);
+  try {
+    const { id } = req.params;
+    const deletedUser = await userService.deleteUser(id);
 
-  if (!user) {
-    return next(new AppError(`Користувача з id ${id} не знайдено`, 404));
+    res.status(200).json({
+      user: deletedUser,
+    });
+  } catch (error) {
+    next(error);
   }
-
-  await user.destroy();
-  res.status(200).json({ user, message: "Користувач видалений" });
 };
