@@ -1,56 +1,54 @@
-.taskList{
-    padding-top: 50px;
-    display: flex;
-    flex-wrap: wrap;
+.taskList {
+  padding-top: 50px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.taskItem{
-    display: grid;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 20px;
-    background-color: #252525;
-    padding: 30px 35px;
-    border-radius: 20px;
+.taskItem {
+  display: grid;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+  background-color: #252525;
+  padding: 30px 35px;
+  border-radius: 20px;
 }
 
-.todoStatus{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #d2d2d2;
-    width: max-content;
-    background: #3b3b3b;
-    padding: 5px 20px;
-    border-radius: 50px;
+.todoStatus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d2d2d2;
+  width: max-content;
+  background: #3b3b3b;
+  padding: 5px 20px;
+  border-radius: 50px;
 
-    font-weight: 600;
-
+  font-weight: 600;
 }
 
-.inProgressStatus{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #0d1a3a;
-    width: max-content;
-    background: #447cff;
-    padding: 5px 20px;
-    border-radius: 50px;
-    
-    font-weight: 600;
+.inProgressStatus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0d1a3a;
+  width: max-content;
+  background: #447cff;
+  padding: 5px 20px;
+  border-radius: 50px;
 
+  font-weight: 600;
 }
 
-.doneStatus{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #0d3b11;
-    width: max-content;
-    background: #23dc35;
-    padding: 5px 20px;
-    border-radius: 50px;
+.doneStatus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0d3b11;
+  width: max-content;
+  background: #23dc35;
+  padding: 5px 20px;
+  border-radius: 50px;
 
-    font-weight: 600;
+  font-weight: 600;
 }

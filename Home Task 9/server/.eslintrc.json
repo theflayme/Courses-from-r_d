@@ -12,11 +12,7 @@
     "project": ["./tsconfig.json"]
   },
 
-  "plugins": [
-    "@typescript-eslint",
-    "import",
-    "simple-import-sort"
-  ],
+  "plugins": ["@typescript-eslint", "import", "simple-import-sort"],
 
   "extends": [
     "eslint:recommended",
@@ -36,7 +32,10 @@
 
   "rules": {
     /** TypeScript rules */
-    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { "argsIgnorePattern": "^_" }
+    ],
     "@typescript-eslint/no-misused-promises": "error",
     "@typescript-eslint/consistent-type-imports": "warn",
     "@typescript-eslint/no-floating-promises": "error",

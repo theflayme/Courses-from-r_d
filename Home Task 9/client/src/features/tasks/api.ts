@@ -1,76 +1,76 @@
-import type { Task, TaskFormData, User } from '../tasks/type.schema';
+import type { Task, TaskFormData, User } from "../tasks/type.schema";
 
 class ItemTaskManager {
-    private url = 'http://localhost:3000/tasks'
+  private url = "http://localhost:3000/tasks";
 
-    async getTasks(): Promise<Task[]> {
-        const response = await fetch(this.url)
-        if(!response.ok){
-            console.error(`Помилка: ${response.status} ${response.statusText}`);
-        }
-
-        const data: Task[] = await response.json();
-        return data;
+  async getTasks(): Promise<Task[]> {
+    const response = await fetch(this.url);
+    if (!response.ok) {
+      console.error(`Помилка: ${response.status} ${response.statusText}`);
     }
 
-    async getTaskById(id: string): Promise<Task> {
-        const response = await fetch(`${this.url}/${id}`)
+    const data: Task[] = await response.json();
+    return data;
+  }
 
-        if(!response.ok){
-            console.error(`Помилка: ${response.status} ${response.statusText}`);
-        }
-        
-        const data: Task = await response.json();
-        return data;
+  async getTaskById(id: string): Promise<Task> {
+    const response = await fetch(`${this.url}/${id}`);
+
+    if (!response.ok) {
+      console.error(`Помилка: ${response.status} ${response.statusText}`);
     }
 
-    async createTask (newTask: TaskFormData) {
-        const task = {
-            ...newTask,
-            createdAt: new Date(),
-        };
-        
-        const response = await fetch(this.url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(task),
-        })
+    const data: Task = await response.json();
+    return data;
+  }
 
-        if(!response.ok){
-            console.error(`Помилка: ${response.status} ${response.statusText}`);
-        }
+  async createTask(newTask: TaskFormData) {
+    const task = {
+      ...newTask,
+      createdAt: new Date(),
+    };
 
-        return response.json();
+    const response = await fetch(this.url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(task),
+    });
+
+    if (!response.ok) {
+      console.error(`Помилка: ${response.status} ${response.statusText}`);
     }
+
+    return response.json();
+  }
 }
 
 export const itemTaskManager = new ItemTaskManager();
 
 class ItemUserManager {
-    private url = 'http://localhost:3000/users'
+  private url = "http://localhost:3000/users";
 
-    async getUsers(): Promise<User[]> {
-        const response = await fetch(this.url)
-        if(!response.ok){
-            console.error(`Помилка: ${response.status} ${response.statusText}`);
-        }
-
-        const data: User[] = await response.json();
-        return data;
+  async getUsers(): Promise<User[]> {
+    const response = await fetch(this.url);
+    if (!response.ok) {
+      console.error(`Помилка: ${response.status} ${response.statusText}`);
     }
 
-    async getUserById(id: string): Promise<User> {
-        const response = await fetch(`${this.url}/${id}`)
+    const data: User[] = await response.json();
+    return data;
+  }
 
-        if(!response.ok){
-            console.error(`Помилка: ${response.status} ${response.statusText}`);
-        }
-        
-        const data: User = await response.json();
-        return data;
+  async getUserById(id: string): Promise<User> {
+    const response = await fetch(`${this.url}/${id}`);
+
+    if (!response.ok) {
+      console.error(`Помилка: ${response.status} ${response.statusText}`);
     }
+
+    const data: User = await response.json();
+    return data;
+  }
 }
 
 export const itemUserManager = new ItemUserManager();

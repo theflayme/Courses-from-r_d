@@ -1,11 +1,11 @@
-import * as express from 'express';
+import * as express from "express";
 import {
-    createUser,
-    deleteUser,
-    getUserById,
-    getUsers,
-    updateUser,
-} from '../controllers/user.controller';
+  createUser,
+  deleteUser,
+  getUserById,
+  getUsers,
+  updateUser,
+} from "../controllers/user.controller";
 
 const app = express.Router();
 app.use(express.json());

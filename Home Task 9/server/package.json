@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest --coverage --detectOpenHandles",
     "dev": "tsx watch src/server.ts",
-    "prepare": "husky"
+    "husky": "husky",
+    "prettier": "prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -46,9 +47,9 @@
     "typescript-eslint": "^8.46.4"
   },
   "lint-staged": {
-  "*.{js,jsx,ts,tsx}": [
-    "eslint --fix",
-    "prettier --write"
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
     ]
   }
 }

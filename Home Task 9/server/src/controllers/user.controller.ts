@@ -1,59 +1,78 @@
-import type { Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
+import { userService } from "../services/user.service";
 
-import { User } from "../models/user.model";
-import type { UserDataType } from "../types/user.types";
+export const getUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const users = await userService.getUsers();
 
-export const getUserById = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const user = await User.findByPk(id);
-
-    if (!user) {
-        res.status(404).json({ message: `Користувача з id ${id} не знайдено` });
-    }
-
-    res.json(user);
-}
-
-export const createUser = async (req: Request, res: Response) => {
-    const { name, email } = req.body as { name?: string; email?: string };
-
-    if (!name || !email) {
-        res.status(400).json({ message: 'Некорректные данные: name и email обязательны' });
-        return;
-    }
-
-    const user = await User.create({ name, email });
-    res.status(201).json(user);
+    res.status(200).json(users);
+  } catch (error) {
+    next(error);
+  }
 };
 
-export const getUsers = async (req: Request, res: Response) => {
-    const users = await User.findAll();
-    res.status(200).json(users);
-}
-
-export const updateUser = async (req: Request, res: Response) => {
+export const getUserById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
     const { id } = req.params;
-    const updatedUser: UserDataType = req.body;
-    const user = await User.findByPk(id);
+    const user = await userService.getUserById(id);
 
-    if (!user) {
-        res.status(404).json({ message: `Користувача з id ${id} не знайдено` });
-        return;
-    }
-    
-    await user.update(updatedUser);
     res.status(200).json(user);
-}
+  } catch (error) {
+    next(error);
+  }
+};
 
-export const deleteUser = async (req: Request, res: Response) => {
+export const createUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { name, email } = req.body;
+    const user = await userService.createUser({ name, email });
+
+    res.status(201).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
     const { id } = req.params;
-    const user = await User.findByPk(id);
-    
-    if (!user) {
-        res.status(404).json({ message: `Користувача з id ${id} не знайдено` });
-        return;
-    }
+    const updatedUser = await userService.updateUser(id, req.body);
 
-    await user.destroy();
-    res.status(200).json({ user: user, message: 'Користувач видалений' });
-}
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+    const deletedUser = await userService.deleteUser(id);
+
+    res.status(200).json({
+      user: deletedUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

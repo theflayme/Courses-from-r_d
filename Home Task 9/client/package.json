@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "test": "vitest --watch ",
-    "prepare": "husky"
+    "husky": "husky",
+    "prettier": "prettier --write ."
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -55,9 +56,9 @@
   "author": "",
   "license": "ISC",
   "lint-staged": {
-  "*.{js,ts}": [
-    "eslint --fix",
-    "prettier --write"
+    "*.{js,ts}": [
+      "eslint --fix",
+      "prettier --write"
     ]
   }
 }

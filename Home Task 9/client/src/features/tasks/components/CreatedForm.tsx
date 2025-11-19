@@ -9,7 +9,7 @@ interface CreatedFormProps {
   errors: FieldErrors<TaskFormData>;
 }
 
-const CreatedForm: React.FC<CreatedFormProps> = ({ register, errors }) => {  
+const CreatedForm: React.FC<CreatedFormProps> = ({ register, errors }) => {
   const { users } = useAsyncUserList();
 
   return (
@@ -31,9 +31,7 @@ const CreatedForm: React.FC<CreatedFormProps> = ({ register, errors }) => {
       <div className="formGroupItem">
         <label htmlFor="title">Заголовок</label>
         <input id="title" {...register("title")} />
-        {errors.title && (
-          <span id="errorMessage">{errors.title.message}</span>
-        )}
+        {errors.title && <span id="errorMessage">{errors.title.message}</span>}
       </div>
 
       <div className="formGroupItem">

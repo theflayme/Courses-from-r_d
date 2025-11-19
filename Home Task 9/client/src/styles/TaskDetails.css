@@ -1,20 +1,20 @@
-.taskDetailsContainer{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 90vh;
-    gap: 10px;
+.taskDetailsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 90vh;
+  gap: 10px;
 }
 
-.taskDetailsTitle{
-    font-size: 32px;
-    font-weight: bold;
+.taskDetailsTitle {
+  font-size: 32px;
+  font-weight: bold;
 }
 
-.taskDetailsInfo{
-    font-size: 20px;
-    font-weight: normal;
-    color: white;
-    opacity: 0.5;
+.taskDetailsInfo {
+  font-size: 20px;
+  font-weight: normal;
+  color: white;
+  opacity: 0.5;
 }

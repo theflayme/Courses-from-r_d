@@ -1,7 +1,11 @@
 import type { Request, Response, NextFunction } from "express";
 import { filterTaskType } from "../types/task.types";
 
-const validateGetTasksQuery = (req: Request, res: Response, next: NextFunction) => {
+const validateGetTasksQuery = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const result = filterTaskType.safeParse(req.query);
 
   if (!result.success) {
@@ -14,7 +18,7 @@ const validateGetTasksQuery = (req: Request, res: Response, next: NextFunction) 
     });
   }
 
-  res.locals.validatedQuery = result.data; 
+  res.locals.validatedQuery = result.data;
   next();
 };
 

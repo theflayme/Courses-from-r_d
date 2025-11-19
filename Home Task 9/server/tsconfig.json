@@ -44,7 +44,13 @@
     "isolatedModules": true,
     // "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
-  "exclude": ["node_modules", "dist", "jest.config.js", "jest", "eslint.config.mts"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "jest.config.js",
+    "jest",
+    "eslint.config.mts"
+  ]
 }

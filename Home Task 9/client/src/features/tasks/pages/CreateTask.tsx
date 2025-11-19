@@ -4,14 +4,18 @@ import { useNavigate } from "react-router-dom";
 
 import { taskSchema, type TaskFormData } from "../type.schema.ts";
 
-import '../../../styles/CreateTask.css';
+import "../../../styles/CreateTask.css";
 import { itemTaskManager } from "../api.ts";
 import CreatedForm from "../components/CreatedForm.tsx";
 
 const CreateTask = () => {
   const navigate = useNavigate();
 
-  const { register, handleSubmit, formState: { errors, isSubmitting, isValid }} = useForm<TaskFormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<TaskFormData>({
     resolver: zodResolver(taskSchema),
     mode: "onChange",
   });

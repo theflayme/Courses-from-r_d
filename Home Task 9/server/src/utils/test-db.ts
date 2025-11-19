@@ -1,5 +1,5 @@
 // src/utils/test-db.ts
-import sequelize from '../db';
+import sequelize from "../db";
 
 export async function setupTestDb() {
   await sequelize.authenticate();

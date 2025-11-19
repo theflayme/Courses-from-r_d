@@ -1,80 +1,80 @@
-import type { Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
+import type { TaskFormData, FilterTaskType } from "../types/task.types";
 
-import { Task } from "../models/task.model";
-import { User } from "../models/user.model";
+import { taskService } from "../services/task.service";
 
-import { type TaskFormData, type TaskType } from "../types/task.types";
+// GET /tasks
+export const getTasks = async (
+  req: Request<FilterTaskType>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const filters = res.locals.validatedQuery;
+    const tasks = await taskService.getTasks(filters);
 
-import { filterTaskList } from "../utils/FilterTaskList";
+    return res.status(200).json(tasks);
+  } catch (error) {
+    next(error);
+  }
+};
 
-export const getTasks = async (req: Request, res: Response) => {
-    const { createdAt, status, priority, userId } = req.query;
-    
-    if (userId) {
-        const tasks = await Task.findAll({
-            where: {
-                userId: parseInt(userId as string)
-            }
-        });
-        res.json(tasks);
-        return;
-    }
-    
-    const filtered = await filterTaskList(createdAt as string, status as string, priority as string);
-    res.json(filtered);
-}
+// GET /tasks/:id
+export const getTaskById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const task = await taskService.getTaskById(req.params.id);
 
-export const getTaskById = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const task = await Task.findByPk(id);
-    
-    if (!task) {
-        res.status(404).json({ error: `Задача з ID:${id} не знайдена` });
-        return;
-    }
-    
-    res.json(task);
-}
+    return res.status(200).json(task);
+  } catch (error) {
+    next(error);
+  }
+};
 
+// POST /tasks
+export const createTask = async (
+  req: Request<{}, TaskFormData>,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const newTask = await taskService.createTask(req.body);
 
-export const createTask = async (req: Request, res: Response) => {
-        const newTask: TaskFormData = req.body;
-        const user = await User.findByPk(newTask.userId);
+    return res.status(201).json(newTask);
+  } catch (error) {
+    next(error);
+  }
+};
 
-        if (!user) {
-            res.status(400).json({ error: `Користувача з ID:${newTask.userId} не існує` });
-            return;
-        }
+// PUT /tasks/:id
+export const updateTask = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const updated = await taskService.updateTask(req.params.id, req.body);
 
-        const createdTask = await Task.create(newTask);
-        res.status(201).json(createdTask);
-}
+    return res.status(200).json(updated);
+  } catch (error) {
+    next(error);
+  }
+};
 
-export const updateTask = async (req: Request, res: Response) => {
-        const { id } = req.params;
-        const updatedTask: TaskType = req.body;
-        const task = await Task.findByPk(id);
+// DELETE /tasks/:id
+export const deleteTask = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const response = await taskService.deleteTask(req.params.id);
 
-        if (!task) {
-            res.status(404).json({ error: `Задача з ID:${id} не знайдена` });
-            return;
-        }
-
-        await task.update(updatedTask);
-        const updatedTaskData = await Task.findByPk(id);
-        res.status(200).json(updatedTaskData);
-}
-
-export const deleteTask = async (req: Request, res: Response) => {
-        const { id } = req.params;
-        const task = await Task.findByPk(id);
-
-        if(!task){
-            res.status(404).json({ error: `Задача з ID:${id} не знайдена` });
-            return;
-        }
-
-        await task.destroy();
-        const tasks = await Task.findAll();
-        res.status(200).json({message: `Задача з ID:${id} видалена`, task: tasks});
-}
+    return res.status(200).json(response);
+  } catch (error) {
+    next(error);
+  }
+};

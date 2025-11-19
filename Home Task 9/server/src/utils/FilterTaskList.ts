@@ -1,20 +1,25 @@
+import { Op } from "sequelize";
 import { Task } from "../models/task.model";
+import type { FilterTaskType } from "../types/task.types";
 
-export const filterTaskList = async (createdAt?: string, status?: string, priority?: string) => {
-    const tasks = await Task.findAll();
-    let filtered = [...tasks];
-    
-    if (createdAt) {
-        filtered = filtered.filter(t => t.createdAt.startsWith(createdAt));
-    }
+export const filterTaskList = async (filters: FilterTaskType) => {
+  const where: Record<string, unknown> = {};
 
-    if (status) {
-        filtered = filtered.filter(t => t.status === status);
-    }
+  if (filters.status) {
+    where.status = filters.status;
+  }
 
-    if (priority) {
-        filtered = filtered.filter(t => t.priority === priority);
-    }
+  if (filters.priority) {
+    where.priority = filters.priority;
+  }
 
-    return filtered;
-}
+  if (filters.createdAt) {
+    const date = new Date(filters.createdAt);
+
+    where.createdAt = {
+      [Op.gte]: date,
+    };
+  }
+
+  return Task.findAll({ where });
+};
