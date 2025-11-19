@@ -1,6 +1,3 @@
-/*
- * Поверненення логіки в task.service з файлу сервісів
-*/
 
 import { Task } from "../models/task.model";
 import type { FilterTaskType, TaskFormData } from "../types/task.types";
