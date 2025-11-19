@@ -33,7 +33,7 @@ export const taskService = {
     if (!user) {
       throw new AppError("Користувача з таким userId не існує", 404);
     }
-    return Task.create(data);
+    return Task.create(data); 
   },
 
   async updateTask(id: string, body: Partial<TaskFormData>) {

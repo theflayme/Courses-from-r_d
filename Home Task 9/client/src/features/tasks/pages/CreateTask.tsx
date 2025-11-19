@@ -34,7 +34,7 @@ const CreateTask = () => {
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="formGroup">
-          <CreatedForm register={register} errors={errors} />
+          <CreatedForm register={register} errors={errors} /> 
           <button disabled={!isValid || isSubmitting} type="submit">
             Створити задачу
           </button>

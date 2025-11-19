@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 export const taskStatus = ['todo', 'in_progress', 'review', 'done'] as const;
-
 export const taskPriority = ['low', 'medium', 'high'] as const;
 
 export const taskSchema = z.object({
@@ -14,8 +13,7 @@ export const taskSchema = z.object({
     message: `Пріоритет повинен містити в собі одне з наступних значень: ${taskPriority.join(', ')}`,
   }),
 
-  deadline: z.coerce
-    .date({ message: "Дедлайн повинен бути обов'язковим" })
+  deadline: z.coerce.date({ message: "Дедлайн повинен бути обов'язковим" })
     .refine((data) => data >= new Date(), {
       message: 'Дата виконання не може бути меншою за сьогодні',
     }),
@@ -23,11 +21,19 @@ export const taskSchema = z.object({
 
 export type TaskFormData = z.infer<typeof taskSchema>;
 
+/*
+  Опис: Тип завдання з усіма полями, включаючи системні
+*/
+
 export type TaskType = TaskFormData & {
   id: string;
   createdAt: Date;
   updatedAt: Date;
 };
+
+/*
+  Опис: Тип для фільтрації завдань за різними параметрами
+*/
 
 export const filterTaskType = z.object({
   id: z.string().optional(),
@@ -47,6 +53,10 @@ export const filterTaskType = z.object({
 });
 
 export type FilterTaskType = z.infer<typeof filterTaskType>;
+
+/*
+  Опис: Тип для повідомлень про помилки
+*/
 
 export type ErrorMessageType = {
   status: number;

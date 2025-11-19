@@ -14,7 +14,7 @@ const app = express.Router();
 app.use(express.json());
 
 app.get('/', validateGetTasksQuery, getTasks);
-app.get('/:id', validateGetTasksQuery, getTaskById);
+app.get('/:id', getTaskById);
 app.post('/', validateRequestBody, createTask);
 app.put('/:id', validateUpdateTask, updateTask);
 app.delete('/:id', deleteTask);

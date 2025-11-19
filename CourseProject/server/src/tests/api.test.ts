@@ -3,7 +3,7 @@ import request from 'supertest';
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 
 import TaskRoutes from '../routes/task.routes';
-import * as TaskService from '../services/task.service';
+import taskService from '../services/task.service';
 
 const app = express();
 app.use(express.json());
@@ -40,8 +40,8 @@ describe('Task API', () => {
       ];
 
       jest
-        .spyOn(TaskService, 'getTasksService')
-        .mockResolvedValueOnce(tasksMock as any);
+        .spyOn(taskService, 'getTasks')
+        .mockResolvedValueOnce(tasksMock);
 
       const res = await request(app).get('/task');
 
@@ -92,7 +92,7 @@ describe('Task API', () => {
 
       jest
         .spyOn(TaskService, 'createTaskService')
-        .mockResolvedValueOnce(createdTask as any);
+        .mockResolvedValueOnce(createdTask );
 
       const res = await request(app).post('/task').send(validTaskPayload);
 
@@ -142,7 +142,7 @@ describe('Task API', () => {
 
       jest
         .spyOn(TaskService, 'updateTaskService')
-        .mockResolvedValueOnce(updatedTask as any);
+        .mockResolvedValueOnce(updatedTask);
 
       const res = await request(app).put(`/task/${taskId}`).send(updatePayload);
 

@@ -1,58 +1,56 @@
-import { Task } from '../models/task.model';
-import {
-  filterTaskType,
-  TaskFormData,
-  taskPriority,
-  taskStatus,
-} from '../types/task.types';
 
-export const getTasksService = async (
-  query: Record<string, string | undefined>,
-) => {
-  const result = filterTaskType.safeParse(query);
+import { Task } from "../models/task.model";
+import type { FilterTaskType, TaskFormData } from "../types/task.types";
 
-  if (!result.success) {
-    throw result.error;
-  }
+import { AppError } from "../utils/appError";
+import taskFilterList from "../utils/taskFilterList";
 
-  const { id, status, priority, createdAt } = result.data;
+const taskService = {
+  async getTasks(filters: FilterTaskType) {
+    const hasFilters = filters.createdAt  || filters.status || filters.priority;
 
-  if (id) {
-    const task = await Task.findById(id);
-    return task ? [task] : [];
-  }
-
-  const filter: {
-    status?: (typeof taskStatus)[number];
-    priority?: (typeof taskPriority)[number];
-    createdAt?: Date;
-  } = {};
-
-  if (status) filter.status = status;
-  if (priority) filter.priority = priority;
-
-  if (createdAt) {
-    const date = new Date(createdAt);
-    if (!isNaN(date.getTime())) {
-      filter.createdAt = date;
+    if (hasFilters) {
+      return taskFilterList(filters);
     }
-  }
 
-  return await Task.find(filter);
+    return Task.find();
+  },
+
+  async getTaskById(id: string) {
+    const task = await Task.findById(id);
+
+    if (!task) {
+      throw new AppError("Завдання не знайдено", 404);
+    }
+    
+    return task;
+  },
+
+
+  async createTask(data: TaskFormData) {
+    return Task.create(data);
+  },
+
+  async updateTask(id: string, body: Partial<TaskFormData>) {
+    const task = await Task.findById(id);
+
+    if (!task) {
+      throw new AppError("Завдання не знайдено", 404);
+    }
+
+    return await task.set(body);
+  },
+
+  async deleteTask(id: string) {
+    const deleteTask = await Task.findById(id);
+
+    if (!deleteTask) {
+      throw new AppError("Завдання не знайдено", 404);
+    }
+
+    await deleteTask.deleteOne();
+    return { message: "Завдання видалено", task: deleteTask };
+  },
 };
 
-// POST /
-export const createTaskService = async (data: TaskFormData) => {
-  const newTask = new Task(data);
-  return newTask.save();
-};
-
-// PUT /:id
-export const updateTaskService = async (id: string, data: TaskFormData) => {
-  return Task.findByIdAndUpdate(id, data, { new: true });
-};
-
-// DELETE /:id
-export const deleteTaskService = async (id: string) => {
-  return Task.findByIdAndDelete(id);
-};
+export default taskService;

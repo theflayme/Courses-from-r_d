@@ -10,6 +10,12 @@ export default defineConfig([
     extends: ['js/recommended'],
     languageOptions: { globals: globals.node },
   },
+  {
+    files: ['**/*.ts'],
+    ...tseslint.configs.recommended,
+    rules: {
+      '@typescript-eslint/no-empty-object-type': 'off',
+    },
+  },
   { files: ['**/*.js'], languageOptions: { sourceType: 'commonjs' } },
-  tseslint.configs.recommended,
 ]);
