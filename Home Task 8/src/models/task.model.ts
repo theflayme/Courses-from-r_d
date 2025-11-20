@@ -1,12 +1,21 @@
-import { Table, Column, Model, DataType, ForeignKey } from 'sequelize-typescript';
-import { User } from './user.model';
-import type { TaskFormData, TaskStatus, TaskPriority } from '../types/task.types';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  ForeignKey,
+} from "sequelize-typescript";
+import User from "./user.model";
+import type {
+  TaskFormData,
+  TaskStatus,
+  TaskPriority,
+} from "../types/task.types";
 
 @Table({
-  tableName: 'tasks',
+  tableName: "tasks",
 })
-export class Task extends Model<TaskFormData> {
-
+class Task extends Model<TaskFormData> {
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
@@ -38,3 +47,5 @@ export class Task extends Model<TaskFormData> {
   })
   deadline!: Date;
 }
+
+export default Task;

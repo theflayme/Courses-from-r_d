@@ -1,7 +1,11 @@
 import type { Request, Response, NextFunction } from "express";
 import { taskSchema } from "../types/task.types";
 
-const validateRequestBody = ( req: Request, res: Response, next: NextFunction ) => {
+const validateRequestBody = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const result = taskSchema.safeParse(req.body);
 
   if (!result.success) {
@@ -13,7 +17,6 @@ const validateRequestBody = ( req: Request, res: Response, next: NextFunction ) 
       })),
     });
   }
-  
 
   req.body = result.data;
 

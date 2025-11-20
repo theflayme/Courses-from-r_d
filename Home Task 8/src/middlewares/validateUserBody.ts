@@ -19,5 +19,3 @@ const validateUserBody = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export default validateUserBody;
-
-

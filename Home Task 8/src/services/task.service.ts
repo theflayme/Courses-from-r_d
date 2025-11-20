@@ -1,5 +1,6 @@
-
-import { Task } from "../models/task.model";
+import Task from "../models/task.model";
+import User from "../models/user.model";
+import { Op } from "sequelize";
 import type { FilterTaskType, TaskFormData } from "../types/task.types";
 
 import { AppError } from "../utils/appError";
@@ -7,11 +8,9 @@ import { filterTaskList } from "../utils/filterTaskList";
 
 export const taskService = {
   async getTasks(filters: FilterTaskType) {
-    const hasFilters = filters.createdAt  || filters.status || filters.priority;
+    const hasFilters = filters.createdAt || filters.status || filters.priority;
 
-    if (hasFilters) {
-      return filterTaskList(filters);
-    }
+    if (hasFilters) return filterTaskList(Task, filters);
 
     return Task.findAll();
   },
@@ -21,12 +20,20 @@ export const taskService = {
     if (!task) {
       throw new AppError("Завдання не знайдено", 404);
     }
+
     return task;
   },
 
-
   async createTask(data: TaskFormData) {
-    return Task.create(data);
+    console.log(data);
+    const user = await User.findByPk(data.userId);
+
+    if (!user) {
+      console.log(user);
+      throw new AppError("Юзер не знайденний", 400);
+    }
+
+    return await Task.create(data);
   },
 
   async updateTask(id: string, body: Partial<TaskFormData>) {
