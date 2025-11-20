@@ -5,7 +5,7 @@ import {
   DataType,
   ForeignKey,
 } from "sequelize-typescript";
-import { User } from "./user.model";
+import User from "./user.model";
 import type {
   TaskFormData,
   TaskStatus,
@@ -15,7 +15,7 @@ import type {
 @Table({
   tableName: "tasks",
 })
-export class Task extends Model<TaskFormData> {
+class Task extends Model<TaskFormData> {
   @ForeignKey(() => User)
   @Column({
     type: DataType.INTEGER,
@@ -47,3 +47,5 @@ export class Task extends Model<TaskFormData> {
   })
   deadline!: Date;
 }
+
+export default Task;

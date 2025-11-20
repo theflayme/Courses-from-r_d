@@ -1,8 +1,8 @@
 import request from "supertest";
 import { app } from "../server";
 import sequelize from "../db";
-import { User } from "../models/user.model";
-import { Task } from "../models/task.model";
+import User from "../models/user.model";
+import Task from "../models/task.model";
 
 type TaskDto = { status: string };
 
@@ -207,7 +207,7 @@ describe("Тестування API задач", () => {
         userId: user2.body.id,
       });
 
-    const res = await request(app).get(`/tasks?status=done`);
+    const res = await request(app).get("/tasks?status=done");
 
     expect(res.status).toBe(200);
     expect(res.body).toHaveLength(1);

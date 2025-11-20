@@ -1,15 +1,16 @@
-import type { NextFunction, Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/appError";
 import { ZodError } from "zod";
 
 const errorHandler = (
-  err: AppError | ZodError | Error,
+  err: AppError | ZodError,
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   if (err instanceof AppError) {
-    return res.status(err.statusCode).json({
+    return res.status(err.status).json({
+      status: err.status,
       message: err.message,
     });
   }
@@ -21,13 +22,6 @@ const errorHandler = (
         position: e.path.join("."),
         message: e.message,
       })),
-    });
-  }
-
-  if (err instanceof Error) {
-    return res.status(400).json({
-      error: "Помилка валідації",
-      message: err.message,
     });
   }
 

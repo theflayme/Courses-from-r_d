@@ -1,4 +1,4 @@
-import { User } from "../models/user.model";
+import User from "../models/user.model";
 import type { UserDataType } from "../types/user.types";
 import { AppError } from "../utils/appError";
 

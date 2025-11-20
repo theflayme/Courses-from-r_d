@@ -35,7 +35,7 @@ export const filterTaskType = z.object({
   createdAt: z.coerce
     .date({
       message:
-        'Дата створення повинна бути вказана датою. Приклад: "2025-11-18"',
+        "Дата створення повинна бути вказана датою. Приклад: '2025-11-18'",
     })
     .optional(),
   status: z

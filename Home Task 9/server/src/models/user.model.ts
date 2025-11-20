@@ -4,7 +4,7 @@ import type { UserDataType } from "../types/user.types";
 @Table({
   tableName: "users",
 })
-export class User extends Model<UserDataType> {
+class User extends Model<UserDataType> {
   @Column({
     type: DataType.STRING,
     allowNull: false,
@@ -17,3 +17,5 @@ export class User extends Model<UserDataType> {
   })
   email!: string;
 }
+
+export default User;

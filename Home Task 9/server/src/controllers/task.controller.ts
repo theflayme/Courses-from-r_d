@@ -1,5 +1,9 @@
 import type { Request, Response, NextFunction } from "express";
-import type { TaskFormData, FilterTaskType } from "../types/task.types";
+import type {
+  TaskFormData,
+  FilterTaskType,
+  TaskType,
+} from "../types/task.types";
 
 import { taskService } from "../services/task.service";
 
@@ -10,7 +14,7 @@ export const getTasks = async (
   next: NextFunction,
 ) => {
   try {
-    const filters = res.locals.validatedQuery;
+    const filters = req.query;
     const tasks = await taskService.getTasks(filters);
 
     return res.status(200).json(tasks);
@@ -41,7 +45,8 @@ export const createTask = async (
   next: NextFunction,
 ) => {
   try {
-    const newTask = await taskService.createTask(req.body);
+    const data = req.body;
+    const newTask = await taskService.createTask(data);
 
     return res.status(201).json(newTask);
   } catch (error) {
@@ -51,13 +56,12 @@ export const createTask = async (
 
 // PUT /tasks/:id
 export const updateTask = async (
-  req: Request,
+  req: Request<{ id: string }, unknown, TaskType>,
   res: Response,
   next: NextFunction,
 ) => {
   try {
     const updated = await taskService.updateTask(req.params.id, req.body);
-
     return res.status(200).json(updated);
   } catch (error) {
     next(error);
@@ -66,7 +70,7 @@ export const updateTask = async (
 
 // DELETE /tasks/:id
 export const deleteTask = async (
-  req: Request,
+  req: Request<{ id: string }>,
   res: Response,
   next: NextFunction,
 ) => {

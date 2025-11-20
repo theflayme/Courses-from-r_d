@@ -1,5 +1,5 @@
 import z from "zod";
-import type { User } from "../models/user.model";
+import type User from "../models/user.model";
 
 export const UserSchema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
