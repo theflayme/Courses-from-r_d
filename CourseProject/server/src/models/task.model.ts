@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { type TaskType, taskPriority, taskStatus } from '../types/task.types';
 
-// Схема Mongoose
 const taskSchemaDB = new Schema<TaskType>(
   {
     title: { type: String, required: true, minlength: 5 },

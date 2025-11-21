@@ -1,14 +1,22 @@
-import type { Request, Response, NextFunction } from "express";
-import type { TaskFormData, FilterTaskType } from "../types/task.types";
+import type { Request, Response, NextFunction } from 'express';
+import type {
+  TaskFormData,
+  FilterTaskType,
+  TaskType,
+} from '../types/task.types';
 
-import taskService from "../services/task.service";
+import { taskService } from '../services/task.service';
 
 // GET /tasks
-export const getTasks = async (req: Request<FilterTaskType>, res: Response, next: NextFunction) => {
+export const getTasks = async (
+  req: Request<FilterTaskType>,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const filters = res.locals.validatedQuery;
+    const filters = req.query;
     const tasks = await taskService.getTasks(filters);
-    
+
     return res.status(200).json(tasks);
   } catch (error) {
     next(error);
@@ -16,7 +24,11 @@ export const getTasks = async (req: Request<FilterTaskType>, res: Response, next
 };
 
 // GET /tasks/:id
-export const getTaskById = async (req: Request, res: Response, next: NextFunction) => {
+export const getTaskById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const task = await taskService.getTaskById(req.params.id!);
 
@@ -27,9 +39,14 @@ export const getTaskById = async (req: Request, res: Response, next: NextFunctio
 };
 
 // POST /tasks
-export const createTask = async (req: Request<{}, {}, TaskFormData>, res: Response, next: NextFunction) => {
+export const createTask = async (
+  req: Request<{}, TaskFormData>,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const newTask = await taskService.createTask(req.body);
+    const data = req.body;
+    const newTask = await taskService.createTask(data);
 
     return res.status(201).json(newTask);
   } catch (error) {
@@ -38,10 +55,13 @@ export const createTask = async (req: Request<{}, {}, TaskFormData>, res: Respon
 };
 
 // PUT /tasks/:id
-export const updateTask = async (req: Request, res: Response, next: NextFunction) => {
+export const updateTask = async (
+  req: Request<{ id: string }, unknown, TaskType>,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const updated = await taskService.updateTask(req.params.id!, req.body);
-
+    const updated = await taskService.updateTask(req.params.id, req.body);
     return res.status(200).json(updated);
   } catch (error) {
     next(error);
@@ -49,10 +69,14 @@ export const updateTask = async (req: Request, res: Response, next: NextFunction
 };
 
 // DELETE /tasks/:id
-export const deleteTask = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteTask = async (
+  req: Request<{ id: string }>,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
-    const response = await taskService.deleteTask(req.params.id!);
-    
+    const response = await taskService.deleteTask(req.params.id);
+
     return res.status(200).json(response);
   } catch (error) {
     next(error);

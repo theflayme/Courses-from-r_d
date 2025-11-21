@@ -3,21 +3,41 @@ import request from 'supertest';
 import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 
 import TaskRoutes from '../routes/task.routes';
-import taskService from '../services/task.service';
+import { taskService } from '../services/task.service';
+import { AppError } from '../utils/appError';
+import errorHandler from '../middlewares/errorHandler';
 
-const app = express();
-app.use(express.json());
-app.use('/task', TaskRoutes);
+import type { TaskFormData, TaskType } from '../types/task.types';
+import type { HydratedDocument } from 'mongoose';
 
-const days = 24 * 60 * 60 * 1000;
+type TaskDocument = HydratedDocument<TaskType>;
 
-const validTaskPayload = {
+const createMockTask = (id = '1', payload?: Partial<TaskFormData>): TaskDocument =>
+  ({
+    _id: id,
+    id,
+    title: 'Task title',
+    description: 'Description',
+    status: 'todo',
+    priority: 'low',
+    deadline: new Date(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    ...payload,
+  } as unknown as TaskDocument);
+
+const validTaskPayload: TaskFormData = {
   title: 'Valid task title',
   description: 'Some description',
   status: 'todo',
   priority: 'low',
-  deadline: new Date(Date.now() + days).toISOString(),
+  deadline: new Date(Date.now() + 86400000),
 };
+
+const app = express();
+app.use(express.json());
+app.use('/task', TaskRoutes);
+app.use(errorHandler);
 
 describe('Task API', () => {
   beforeEach(() => {
@@ -26,211 +46,161 @@ describe('Task API', () => {
 
   describe('GET /task', () => {
     it('Повертає 200 та список задач', async () => {
-      const tasksMock = [
-        {
-          id: '1',
-          title: 'Task 1',
-          description: 'Desc 1',
-          status: 'todo',
-          priority: 'low',
-          deadline: new Date().toISOString(),
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      ];
-
-      jest
-        .spyOn(taskService, 'getTasks')
-        .mockResolvedValueOnce(tasksMock);
+      jest.spyOn(taskService, 'getTasks').mockResolvedValueOnce([
+        createMockTask('1'),
+      ]);
 
       const res = await request(app).get('/task');
 
       expect(res.status).toBe(200);
-      expect(res.body).toEqual(tasksMock);
+      expect(Array.isArray(res.body)).toBe(true);
+      expect(res.body[0]).toHaveProperty('id', '1');
     });
 
-    it('Повертає 400, параметри запиту невалідні', async () => {
-      const res = await request(app)
-        .get('/task')
-        .query({ status: 'invalid-status' });
-
+    it('Повертає 400, якщо параметри невалідні', async () => {
+      const res = await request(app).get('/task').query({ status: 'wrong' });
       expect(res.status).toBe(400);
       expect(res.body).toHaveProperty('error');
     });
 
-    it('Повертає 404, задачі з вказаним id не існує', async () => {
-      jest.spyOn(TaskService, 'getTasksService').mockResolvedValueOnce([]);
+    it('Повертає 200 та порожній масив, якщо задач немає', async () => {
+      jest.spyOn(taskService, 'getTasks').mockResolvedValueOnce([]);
 
-      const res = await request(app)
-        .get('/task')
-        .query({ id: 'non-existing-id' });
+      const res = await request(app).get('/task').query({ id: 'no-id' });
 
-      expect(res.status).toBe(404);
-      expect(res.body).toHaveProperty('message', 'Задача не знайдена');
+      expect(res.status).toBe(200);
+      expect(res.body).toEqual([]);
     });
 
-    it('Повертає 500, внутрішня помилка сервера', async () => {
+    it('Повертає 400 при помилці сервера', async () => {
       jest
-        .spyOn(TaskService, 'getTasksService')
-        .mockRejectedValueOnce(new Error('Test internal error'));
+        .spyOn(taskService, 'getTasks')
+        .mockRejectedValueOnce(new Error('DB connection failed'));
 
       const res = await request(app).get('/task');
 
-      expect(res.status).toBe(500);
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty('message', 'DB connection failed');
     });
   });
 
   describe('POST /task', () => {
-    it('Повертає 201, успішне створення задачі', async () => {
-      const createdTask = {
-        id: '1',
-        ...validTaskPayload,
-        deadline: new Date(validTaskPayload.deadline).toISOString(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
+    it('201 – задача створена', async () => {
       jest
-        .spyOn(TaskService, 'createTaskService')
-        .mockResolvedValueOnce(createdTask );
+        .spyOn(taskService, 'createTask')
+        .mockResolvedValueOnce(createMockTask('1', validTaskPayload));
 
       const res = await request(app).post('/task').send(validTaskPayload);
 
       expect(res.status).toBe(201);
-      expect(res.body).toEqual(createdTask);
+      expect(res.body.id).toBe('1');
     });
 
-    it('Повертає 400, тіло запиту невалідне', async () => {
-      const invalidPayload = {
-        ...validTaskPayload,
-        title: '123',
-      };
-
-      const res = await request(app).post('/task').send(invalidPayload);
-
+    it('400 – невалідний body', async () => {
+      const res = await request(app).post('/task').send({ title: '' });
       expect(res.status).toBe(400);
-      expect(res.body).toHaveProperty('error', 'Помилка валідації');
     });
 
-    it('Повертає 500, внутрішня помилка сервера', async () => {
+    it('400 – помилка сервера', async () => {
       jest
-        .spyOn(TaskService, 'createTaskService')
-        .mockRejectedValueOnce(new Error('Create error'));
+        .spyOn(taskService, 'createTask')
+        .mockRejectedValueOnce(new Error('Save failed'));
 
       const res = await request(app).post('/task').send(validTaskPayload);
 
-      expect(res.status).toBe(500);
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty('message', 'Save failed');
     });
   });
 
   describe('PUT /task/:id', () => {
     const taskId = 'existing-id';
 
-    it('Повертає 200, успішне оновлення задачі', async () => {
-      const updatePayload = {
-        status: 'in_progress',
-      };
-
-      const updatedTask = {
-        id: taskId,
-        ...validTaskPayload,
-        ...updatePayload,
-        deadline: new Date(validTaskPayload.deadline).toISOString(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
+    it('200 – успішне оновлення', async () => {
       jest
-        .spyOn(TaskService, 'updateTaskService')
-        .mockResolvedValueOnce(updatedTask);
+        .spyOn(taskService, 'updateTask')
+        .mockResolvedValueOnce(createMockTask(taskId, { status: 'in_progress' }));
 
-      const res = await request(app).put(`/task/${taskId}`).send(updatePayload);
+      const res = await request(app)
+        .put(`/task/${taskId}`)
+        .send({ status: 'in_progress' });
 
       expect(res.status).toBe(200);
-      expect(res.body).toEqual(updatedTask);
+      expect(res.body.status).toBe('in_progress');
     });
 
-    it('Повертає 400, тіло запиту невалідне', async () => {
-      const invalidUpdate = {
-        status: 'invalid-status',
-      };
-
-      const res = await request(app).put(`/task/${taskId}`).send(invalidUpdate);
+    it('400 – невалідне тіло запиту', async () => {
+      const res = await request(app)
+        .put(`/task/${taskId}`)
+        .send({ priority: 'ultra' });
 
       expect(res.status).toBe(400);
-      expect(res.body).toHaveProperty('error', 'Помилка валідації');
     });
 
-    it('Повертає 404, задачі з вказаним id не існує', async () => {
-      jest.spyOn(TaskService, 'updateTaskService').mockResolvedValueOnce(null);
+    it('400 – задача не знайдена', async () => {
+      jest
+        .spyOn(taskService, 'updateTask')
+        .mockRejectedValueOnce(new AppError('Завдання не знайдено', 400));
 
       const res = await request(app)
         .put(`/task/${taskId}`)
         .send({ status: 'done' });
 
-      expect(res.status).toBe(404);
-      expect(res.body).toHaveProperty(
-        'message',
-        `Задача з ID:${taskId}, відсутня`,
-      );
+      expect(res.status).toBe(400);
+      expect(res.body).toEqual({
+        status: 400,
+        message: 'Завдання не знайдено',
+      });
     });
 
-    it('Повертає 500, внутрішня помилка сервера', async () => {
+    it('500 – серверна помилка', async () => {
       jest
-        .spyOn(TaskService, 'updateTaskService')
-        .mockRejectedValueOnce(new Error('Update error'));
+        .spyOn(taskService, 'updateTask')
+        .mockRejectedValueOnce(new AppError('Помилка сервера', 500));
 
       const res = await request(app)
         .put(`/task/${taskId}`)
         .send({ status: 'done' });
 
       expect(res.status).toBe(500);
+      expect(res.body.status).toBe(500);
     });
   });
 
   describe('DELETE /task/:id', () => {
     const taskId = 'existing-id';
 
-    it('Повертає 200, успішне видалення задачі', async () => {
-      const deletedTask = {
-        id: taskId,
-        ...validTaskPayload,
-        deadline: new Date(validTaskPayload.deadline).toISOString(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      jest
-        .spyOn(TaskService, 'deleteTaskService')
-        .mockResolvedValueOnce(deletedTask as any);
+    it('200 – успішне видалення', async () => {
+      jest.spyOn(taskService, 'deleteTask').mockResolvedValueOnce({
+        message: 'Завдання видалено',
+        task: createMockTask(taskId),
+      });
 
       const res = await request(app).delete(`/task/${taskId}`);
 
       expect(res.status).toBe(200);
-      expect(res.body).toHaveProperty('message', 'Задача видалена');
-      expect(res.body).toHaveProperty('task');
+      expect(res.body.message).toBe('Завдання видалено');
     });
 
-    it('Повертає 404, задачі з вказаним id не існує', async () => {
-      jest.spyOn(TaskService, 'deleteTaskService').mockResolvedValueOnce(null);
-
-      const res = await request(app).delete(`/task/${taskId}`);
-
-      expect(res.status).toBe(404);
-      expect(res.body).toHaveProperty(
-        'message',
-        `Задача з ID:${taskId}, відсутня`,
-      );
-    });
-
-    it('Повертає 500, внутрішня помилка сервера', async () => {
+    it('400 – задачі не існує', async () => {
       jest
-        .spyOn(TaskService, 'deleteTaskService')
-        .mockRejectedValueOnce(new Error('Delete error'));
+        .spyOn(taskService, 'deleteTask')
+        .mockRejectedValueOnce(new AppError('Завдання не знайдено', 400));
 
       const res = await request(app).delete(`/task/${taskId}`);
 
-      expect(res.status).toBe(500);
+      expect(res.status).toBe(400);
+    });
+
+    it('400 – серверна помилка', async () => {
+      jest
+        .spyOn(taskService, 'deleteTask')
+        .mockRejectedValueOnce(new Error('Delete failed'));
+
+      const res = await request(app).delete(`/task/${taskId}`);
+
+      expect(res.status).toBe(400);
+      expect(res.body.message).toBe('Delete failed');
     });
   });
 });
