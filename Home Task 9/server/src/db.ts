@@ -1,4 +1,3 @@
-// src/db.ts
 import { Sequelize } from "sequelize-typescript";
 import User from "./models/user.model";
 import Task from "./models/task.model";
@@ -11,6 +10,7 @@ const sequelize = new Sequelize({
   username: "root",
   password: "root",
   models: [User, Task],
+  logging: false,
 });
 
 export default sequelize;

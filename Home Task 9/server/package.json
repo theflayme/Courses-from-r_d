@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --coverage --detectOpenHandles",
+    "test": "jest",
     "dev": "tsx watch src/server.ts",
     "husky": "husky",
     "prettier": "prettier --write ."

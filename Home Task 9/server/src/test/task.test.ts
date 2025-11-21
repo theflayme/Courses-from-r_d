@@ -36,6 +36,7 @@ describe("Тестування API задач", () => {
       .send({ name: "Test User", email: "test@test.com" });
 
     userId = res.body.id;
+    console.log(`userId new: ${userId}`);
   });
 
   it("GET /tasks -> 200 та порожній масив", async () => {
@@ -48,12 +49,12 @@ describe("Тестування API задач", () => {
     const res = await request(app)
       .post("/tasks")
       .send({
+        userId: userId,
         title: "Test Task",
         description: "Test Description",
         status: "todo",
-        priority: "medium",
-        deadline: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
-        userId: userId,
+        priority: "low",
+        deadline: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // date in 3 days
       });
 
     expect(res.status).toBe(201);

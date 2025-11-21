@@ -5,7 +5,7 @@ const taskStatus = ["todo", "in_progress", "done"] as const;
 const taskPriority = ["low", "medium", "high"] as const;
 
 export const taskSchema = z.object({
-  userId: z.coerce.number({ message: "Користувач є обовʼязковим" }),
+  userId: z.coerce.string({ message: "Користувач є обовʼязковим" }),
   title: z.string().min(5, "Заголовок має бути більше 5 символів"),
   description: z.string().optional(),
   status: z.enum(taskStatus, { message: "Статус є обовʼязковим" }),
@@ -23,8 +23,7 @@ export type Task = z.infer<typeof taskSchema> & {
 };
 
 // User type
-
 export type User = {
-  id: number;
+  id: string;
   name: string;
 };

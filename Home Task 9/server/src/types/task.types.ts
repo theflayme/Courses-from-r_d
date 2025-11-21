@@ -7,7 +7,7 @@ const taskPriority = ["low", "medium", "high"] as const;
 export type TaskPriority = (typeof taskPriority)[number];
 
 export const taskSchema = z.object({
-  userId: z.number({ message: "ID користувача повинен бути числом" }),
+  userId: z.coerce.number({ message: "ID користувача повинен бути числом" }),
   title: z.string().min(5, "Заголовок має бути більше 5 символів"),
   description: z.string().optional(),
   status: z.enum(taskStatus, {

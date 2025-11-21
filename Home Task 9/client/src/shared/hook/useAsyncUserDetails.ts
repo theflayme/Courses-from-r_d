@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { User } from "../../features/tasks/type.schema";
 import { itemUserManager } from "../../features/tasks/api";
 
-const useAsyncUserDetails = (id?: string) => {
+const useAsyncUserDetails = (id: string | undefined) => {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
