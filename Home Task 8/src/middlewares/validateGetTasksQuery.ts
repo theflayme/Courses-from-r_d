@@ -18,7 +18,6 @@ const validateGetTasksQuery = (
     });
   }
 
-  res.locals.validatedQuery = result.data;
   next();
 };
 
