@@ -1,0 +1,16 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "qwerty",
+    "database": "dev_db",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "qwerty",
+    "database": "prod_db",
+    "host": "localhost",
+    "dialect": "postgres"
+  }
+}

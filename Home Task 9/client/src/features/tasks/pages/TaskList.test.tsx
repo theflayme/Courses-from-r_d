@@ -1,9 +1,3 @@
-/*
-Елементи у списку відображаються коректно (усі потрібні поля присутні).
-При порожньому списку — відображається empty state.
-При помилці — показується error message.
-*/
-
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
@@ -14,6 +8,14 @@ import dateFormat from "../../../shared/utils/dateFormat";
 vi.mock("../../../shared/hook/useAsyncTaskList", () => ({
   default: vi.fn(),
 }));
+
+const renderedTaskList = render(
+  <MemoryRouter initialEntries={["/tasks"]}>
+    <Routes>
+      <Route path="/tasks" element={<TaskList />} />
+    </Routes>
+  </MemoryRouter>
+);
 
 describe("Тестування сторінки списку задач", () => {
   beforeEach(() => {
@@ -58,13 +60,7 @@ describe("Тестування сторінки списку задач", () => 
       error: undefined,
     });
 
-    render(
-      <MemoryRouter initialEntries={["/tasks"]}>
-        <Routes>
-          <Route path="/tasks" element={<TaskList />} />
-        </Routes>
-      </MemoryRouter>,
-    );
+    renderedTaskList;
 
     for (const task of mockTasks) {
       const taskItem = screen.getByText(task.title).closest("li");
@@ -83,13 +79,7 @@ describe("Тестування сторінки списку задач", () => 
       error: undefined,
     });
 
-    render(
-      <MemoryRouter initialEntries={["/tasks"]}>
-        <Routes>
-          <Route path="/tasks" element={<TaskList />} />
-        </Routes>
-      </MemoryRouter>,
-    );
+    renderedTaskList;
 
     expect(screen.getByText("Список задач порожній")).toBeInTheDocument();
   });
@@ -100,13 +90,7 @@ describe("Тестування сторінки списку задач", () => 
       error: { message: "Невідома помилка" },
     });
 
-    render(
-      <MemoryRouter initialEntries={["/tasks"]}>
-        <Routes>
-          <Route path="/tasks" element={<TaskList />} />
-        </Routes>
-      </MemoryRouter>,
-    );
+    renderedTaskList;
 
     expect(screen.getByText("Помилка завантаження задач")).toBeInTheDocument();
   });

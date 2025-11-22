@@ -73,14 +73,16 @@ describe("Тестування сторінки детального перег�
   });
 
   it("При порожньому списку — відображається empty state", () => {
-    (useAsyncTaskDetails as Mock).mockReturnValue({
-      task: undefined,
-      error: undefined,
-    });
+    beforeEach(() => {
+      (useAsyncTaskDetails as Mock).mockReturnValue({
+        task: undefined,
+        error: undefined,
+      });
 
-    (useAsyncUserDetails as Mock).mockReturnValue({
-      user: undefined,
-      error: undefined,
+      (useAsyncUserDetails as Mock).mockReturnValue({
+        user: undefined,
+        error: undefined,
+      });
     });
 
     render(

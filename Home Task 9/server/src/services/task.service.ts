@@ -1,6 +1,5 @@
 import Task from "../models/task.model";
 import User from "../models/user.model";
-import { Op } from "sequelize";
 import type { FilterTaskType, TaskFormData } from "../types/task.types";
 
 import { AppError } from "../utils/appError";

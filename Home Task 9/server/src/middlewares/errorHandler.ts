@@ -6,7 +6,7 @@ const errorHandler = (
   err: AppError | ZodError,
   req: Request,
   res: Response,
-  next: NextFunction,
+  _next: NextFunction,
 ) => {
   if (err instanceof AppError) {
     return res.status(err.status).json({

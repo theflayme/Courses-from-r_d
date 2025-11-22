@@ -3,13 +3,12 @@
   "compilerOptions": {
     // File Layout
     "rootDir": "./src",
-    // "outDir": "./dist",
+    "outDir": "./dist",
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "esnext",
     "target": "ES2020",
-    "moduleResolution": "node",
     // "types": [],
     // For nodejs:
     // "lib": ["esnext"],
@@ -20,6 +19,7 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+    "resolveJsonModule": true,
 
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": false,
@@ -49,7 +49,7 @@
   "exclude": [
     "node_modules",
     "dist",
-    "jest.config.js",
+    "jest.config.cjs",
     "jest",
     "eslint.config.mts"
   ]
