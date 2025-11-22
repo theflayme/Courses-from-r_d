@@ -1,21 +1,53 @@
 import js from '@eslint/js';
-import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import { defineConfig } from 'eslint/config';
+import prettier from 'eslint-plugin-prettier';
 
 export default defineConfig([
+  ...tseslint.configs.recommended,
+
   {
-    files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
-    plugins: { js },
-    extends: ['js/recommended'],
-    languageOptions: { globals: globals.node },
+    files: ['**/*.{js,cjs,mjs}'],
+    ...js.configs.recommended,
   },
+
   {
-    files: ['**/*.ts'],
-    ...tseslint.configs.recommended,
+    files: ['**/*.{ts,cts,mts}'],
+
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+    },
+
+    plugins: {
+      '@typescript-eslint': tseslint.plugin,
+      prettier,
+    },
+
     rules: {
-      '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
+      '@typescript-eslint/no-explicit-any': 'warn',
+      'no-console': 'off',
+
+      'prettier/prettier': 'error',
     },
   },
-  { files: ['**/*.js'], languageOptions: { sourceType: 'commonjs' } },
+
+  {
+    ignores: [
+      'node_modules/',
+      'dist/',
+      'build/',
+      '*.d.ts',
+      'coverage/',
+      'jest.config.cjs',
+    ],
+  },
 ]);

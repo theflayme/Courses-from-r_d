@@ -12,7 +12,10 @@ import type { HydratedDocument } from 'mongoose';
 
 type TaskDocument = HydratedDocument<TaskType>;
 
-const createMockTask = (id = '1', payload?: Partial<TaskFormData>): TaskDocument =>
+const createMockTask = (
+  id = '1',
+  payload?: Partial<TaskFormData>,
+): TaskDocument =>
   ({
     _id: id,
     id,
@@ -24,7 +27,7 @@ const createMockTask = (id = '1', payload?: Partial<TaskFormData>): TaskDocument
     createdAt: new Date(),
     updatedAt: new Date(),
     ...payload,
-  } as unknown as TaskDocument);
+  }) as unknown as TaskDocument;
 
 const validTaskPayload: TaskFormData = {
   title: 'Valid task title',
@@ -46,9 +49,9 @@ describe('Task API', () => {
 
   describe('GET /task', () => {
     it('Повертає 200 та список задач', async () => {
-      jest.spyOn(taskService, 'getTasks').mockResolvedValueOnce([
-        createMockTask('1'),
-      ]);
+      jest
+        .spyOn(taskService, 'getTasks')
+        .mockResolvedValueOnce([createMockTask('1')]);
 
       const res = await request(app).get('/task');
 
@@ -119,7 +122,9 @@ describe('Task API', () => {
     it('200 – успішне оновлення', async () => {
       jest
         .spyOn(taskService, 'updateTask')
-        .mockResolvedValueOnce(createMockTask(taskId, { status: 'in_progress' }));
+        .mockResolvedValueOnce(
+          createMockTask(taskId, { status: 'in_progress' }),
+        );
 
       const res = await request(app)
         .put(`/task/${taskId}`)

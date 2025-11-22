@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.ts",
+  "outDir": "dist",
   "scripts": {
     "test": "jest --watchAll",
     "dev": "tsx watch src/index.ts",
     "prettier": "prettier --write .",
     "prepare": "husky",
-    "build": "tsc"
+    "build": "tsc -b tsconfig.build.json",
+    "lint": "eslint --fix ."
   },
   "keywords": [],
   "author": "",

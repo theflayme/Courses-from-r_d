@@ -1,38 +1,50 @@
+// eslint.config.ts
 import js from '@eslint/js';
-import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import pluginReact from 'eslint-plugin-react';
-import configPrettier from 'eslint-config-prettier';
 import { defineConfig } from 'eslint/config';
+import prettier from 'eslint-plugin-prettier';
 
 export default defineConfig([
+  // TypeScript базова конфігурація
+  ...tseslint.configs.recommended,
+
+  // JS файли
   {
-    files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    files: ['**/*.{js,cjs,mjs}'],
+    ...js.configs.recommended,
+  },
+
+  // TS файли
+  {
+    files: ['**/*.{ts,cts,mts}'],
+
     languageOptions: {
-      ecmaVersion: 2023,
-      sourceType: 'module',
-      globals: {
-        ...globals.browser,
-        ...globals.node,
+      parser: tseslint.parser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
       },
     },
-    settings: {
-      react: {
-        version: 'detect',
-      },
+
+    plugins: {
+      '@typescript-eslint': tseslint.plugin,
+      prettier,
+    },
+
+    rules: {
+      '@typescript-eslint/no-unused-expressions': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
+      '@typescript-eslint/no-explicit-any': 'warn',
+      'no-console': 'off',
+
+      'prettier/prettier': 'error',
     },
   },
 
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
-  pluginReact.configs.flat.recommended,
-  configPrettier,
-
   {
-    files: ['**/*.{js,jsx,ts,tsx}'],
-    rules: {
-      'react/react-in-jsx-scope': 'off',
-      'react/prop-types': 'off',
-    },
+    ignores: ['node_modules/', 'dist/', 'build/', '*.d.ts', 'coverage/'],
   },
 ]);
