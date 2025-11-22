@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
+
 import TaskList from "./TaskList";
 import useAsyncTaskList from "../../../shared/hook/useAsyncTaskList";
 import dateFormat from "../../../shared/utils/dateFormat";
@@ -9,19 +10,16 @@ vi.mock("../../../shared/hook/useAsyncTaskList", () => ({
   default: vi.fn(),
 }));
 
-const renderedTaskList = render(
-  <MemoryRouter initialEntries={["/tasks"]}>
-    <Routes>
-      <Route path="/tasks" element={<TaskList />} />
-    </Routes>
-  </MemoryRouter>
-);
+const renderTaskList = () =>
+  render(
+    <MemoryRouter initialEntries={["/tasks"]}>
+      <Routes>
+        <Route path="/tasks" element={<TaskList />} />
+      </Routes>
+    </MemoryRouter>,
+  );
 
 describe("Тестування сторінки списку задач", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   const mockTasks = [
     {
       id: 1,
@@ -45,6 +43,7 @@ describe("Тестування сторінки списку задач", () => 
     },
     {
       id: 3,
+      userId: "user3",
       title: "Test Task 3",
       description: "Test Description 3",
       status: "in_progress",
@@ -54,13 +53,17 @@ describe("Тестування сторінки списку задач", () => 
     },
   ];
 
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("Елементи у списку відображаються коректно", () => {
     (useAsyncTaskList as Mock).mockReturnValue({
       tasks: mockTasks,
       error: undefined,
     });
 
-    renderedTaskList;
+    renderTaskList();
 
     for (const task of mockTasks) {
       const taskItem = screen.getByText(task.title).closest("li");
@@ -79,18 +82,20 @@ describe("Тестування сторінки списку задач", () => 
       error: undefined,
     });
 
-    renderedTaskList;
+    renderTaskList();
 
     expect(screen.getByText("Список задач порожній")).toBeInTheDocument();
   });
 
   it("При помилці — показується error message", () => {
+    const taskError = new Error("Невідома помилка");
+
     (useAsyncTaskList as Mock).mockReturnValue({
       tasks: [],
-      error: { message: "Невідома помилка" },
+      error: taskError,
     });
 
-    renderedTaskList;
+    renderTaskList();
 
     expect(screen.getByText("Помилка завантаження задач")).toBeInTheDocument();
   });

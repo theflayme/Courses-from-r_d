@@ -73,16 +73,14 @@ describe("Тестування сторінки детального перег�
   });
 
   it("При порожньому списку — відображається empty state", () => {
-    beforeEach(() => {
-      (useAsyncTaskDetails as Mock).mockReturnValue({
-        task: undefined,
-        error: undefined,
-      });
+    (useAsyncTaskDetails as Mock).mockReturnValue({
+      task: undefined,
+      error: undefined,
+    });
 
-      (useAsyncUserDetails as Mock).mockReturnValue({
-        user: undefined,
-        error: undefined,
-      });
+    (useAsyncUserDetails as Mock).mockReturnValue({
+      user: undefined,
+      error: undefined,
     });
 
     render(
@@ -97,14 +95,16 @@ describe("Тестування сторінки детального перег�
   });
 
   it("При помилці — показується error message", () => {
+    const userError = new Error("Помилка при завантаженні користувача");
+
     (useAsyncTaskDetails as Mock).mockReturnValue({
-      task: undefined,
+      task: mockTask,
       error: undefined,
     });
 
     (useAsyncUserDetails as Mock).mockReturnValue({
       user: undefined,
-      error: undefined,
+      error: userError,
     });
 
     render(
@@ -115,6 +115,6 @@ describe("Тестування сторінки детального перег�
       </MemoryRouter>,
     );
 
-    expect(screen.getByText("Задача не знайдена")).toBeInTheDocument();
+    expect(screen.getByText(userError.message)).toBeInTheDocument();
   });
 });
