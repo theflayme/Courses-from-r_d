@@ -28,9 +28,13 @@ app.use(errorHandler);
 
 sequelize
   .authenticate()
-  .then(() => console.log("Підключено до бази даних"))
+  .then(() => {
+    console.log("Підключено до бази даних");
+  })
   .then(() => sequelize.sync())
-  .then(() => console.log("База даних і таблиці створені!"))
+  .then(() => {
+    console.log("База даних і таблиці створені!");
+  })
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Сервер запущено на http://localhost:${PORT}`);

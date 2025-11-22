@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "outDir": "dist",
   "scripts": {
     "test": "cross-env NODE_ENV=test jest --runInBand",
     "dev": "cross-env NODE_ENV=development tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "tsc -b tsconfig.build.json",
     "lint": "eslint --fix .",
     "husky": "husky",
     "prettier": "prettier --write ."
@@ -35,6 +36,7 @@
     "cross-env": "^10.1.0",
     "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.5.0",
     "husky": "^9.1.7",

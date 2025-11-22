@@ -2,12 +2,19 @@
 import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import { defineConfig } from "eslint/config";
+import prettier from "eslint-plugin-prettier";
 
 export default defineConfig([
+  // TypeScript базова конфігурація
+  ...tseslint.configs.recommended,
+
+  // JS файли
   {
     files: ["**/*.{js,cjs,mjs}"],
     ...js.configs.recommended,
   },
+
+  // TS файли
   {
     files: ["**/*.{ts,cts,mts}"],
 
@@ -21,6 +28,7 @@ export default defineConfig([
 
     plugins: {
       "@typescript-eslint": tseslint.plugin,
+      prettier, // ← Додаємо Prettier
     },
 
     rules: {
@@ -29,16 +37,14 @@ export default defineConfig([
         "warn",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
+      "@typescript-eslint/no-explicit-any": "off",
       "no-console": "off",
+
+      "prettier/prettier": "error",
     },
   },
+
   {
-    ignores: [
-      "node_modules/",
-      "dist/",
-      "build/",
-      "*.d.ts",
-      "coverage/",
-    ],
+    ignores: ["node_modules/", "dist/", "build/", "*.d.ts", "coverage/"],
   },
 ]);

@@ -8,6 +8,7 @@ type TaskListProps = {
 
 const CreatedTaskList = ({ tasks }: TaskListProps) => {
   const navigate = useNavigate();
+
   return (
     <>
       <ul className="taskList">

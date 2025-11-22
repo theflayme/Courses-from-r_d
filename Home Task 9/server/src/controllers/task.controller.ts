@@ -1,17 +1,13 @@
 import type { Request, Response, NextFunction } from "express";
-import type {
-  TaskFormData,
-  FilterTaskType,
-  TaskType,
-} from "../types/task.types";
+import type { TaskFormData, FilterTaskType } from "../types/task.types";
 
 import { taskService } from "../services/task.service";
 
 // GET /tasks
 export const getTasks = async (
-  req: Request<FilterTaskType>,
+  req: Request<Record<string, never>, unknown, unknown, FilterTaskType>,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   try {
     const filters = req.query;
@@ -27,7 +23,7 @@ export const getTasks = async (
 export const getTaskById = async (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   try {
     const task = await taskService.getTaskById(req.params.id);
@@ -40,9 +36,9 @@ export const getTaskById = async (
 
 // POST /tasks
 export const createTask = async (
-  req: Request<{}, TaskFormData>,
+  req: Request<Record<string, never>, unknown, TaskFormData>,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   try {
     const data = req.body;
@@ -56,9 +52,9 @@ export const createTask = async (
 
 // PUT /tasks/:id
 export const updateTask = async (
-  req: Request<{ id: string }, unknown, TaskType>,
+  req: Request<{ id: string }, unknown, Partial<TaskFormData>>,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   try {
     const updated = await taskService.updateTask(req.params.id, req.body);
@@ -72,7 +68,7 @@ export const updateTask = async (
 export const deleteTask = async (
   req: Request<{ id: string }>,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   try {
     const response = await taskService.deleteTask(req.params.id);

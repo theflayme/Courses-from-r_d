@@ -18,10 +18,6 @@ vi.mock("../../../shared/hook/useAsyncUserDetails", () => ({
 }));
 
 describe("Тестування сторінки детального перегляду задачі", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   const mockTask: Task = {
     id: "1",
     userId: "user1",
@@ -33,7 +29,9 @@ describe("Тестування сторінки детального перег�
     deadline: new Date("2024-01-05T00:00:00Z"),
   };
 
-  it("Елементи у списку відображаються коректно", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+
     (useAsyncTaskDetails as Mock).mockReturnValue({
       task: mockTask,
       error: undefined,
@@ -43,31 +41,33 @@ describe("Тестування сторінки детального перег�
       user: { name: mockTask.userId },
       error: undefined,
     });
+  });
 
+  it("Елементи у списку відображаються коректно", () => {
     render(
       <MemoryRouter initialEntries={["/tasks/1"]}>
         <Routes>
           <Route path="/tasks/:id" element={<TaskDetails />} />
         </Routes>
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     expect(screen.getByText(mockTask.title)).toBeInTheDocument();
     expect(
-      screen.getByText(`Виконавець: ${mockTask.userId}`),
+      screen.getByText(`Виконавець: ${mockTask.userId}`)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(`Опис: ${mockTask.description}`),
+      screen.getByText(`Опис: ${mockTask.description}`)
     ).toBeInTheDocument();
     expect(screen.getByText(`Статус: ${mockTask.status}`)).toBeInTheDocument();
     expect(
-      screen.getByText(`Пріоритет: ${mockTask.priority}`),
+      screen.getByText(`Пріоритет: ${mockTask.priority}`)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(`Дата створення: ${dateFormat(mockTask.createdAt)}`),
+      screen.getByText(`Дата створення: ${dateFormat(mockTask.createdAt)}`)
     ).toBeInTheDocument();
     expect(
-      screen.getByText(`Дата виконання: ${dateFormat(mockTask.deadline)}`),
+      screen.getByText(`Дата виконання: ${dateFormat(mockTask.deadline)}`)
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Назад" })).toBeInTheDocument();
   });
@@ -88,7 +88,7 @@ describe("Тестування сторінки детального перег�
         <Routes>
           <Route path="/tasks/:id" element={<TaskDetails />} />
         </Routes>
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     expect(screen.getByText("Задача не знайдена")).toBeInTheDocument();
@@ -112,7 +112,7 @@ describe("Тестування сторінки детального перег�
         <Routes>
           <Route path="/tasks/:id" element={<TaskDetails />} />
         </Routes>
-      </MemoryRouter>,
+      </MemoryRouter>
     );
 
     expect(screen.getByText(userError.message)).toBeInTheDocument();
