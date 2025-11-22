@@ -7,7 +7,7 @@ import { taskService } from "../services/task.service";
 export const getTasks = async (
   req: Request<Record<string, never>, unknown, unknown, FilterTaskType>,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const filters = req.query;
@@ -23,7 +23,7 @@ export const getTasks = async (
 export const getTaskById = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const task = await taskService.getTaskById(req.params.id);
@@ -38,7 +38,7 @@ export const getTaskById = async (
 export const createTask = async (
   req: Request<Record<string, never>, unknown, TaskFormData>,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const data = req.body;
@@ -54,7 +54,7 @@ export const createTask = async (
 export const updateTask = async (
   req: Request<{ id: string }, unknown, Partial<TaskFormData>>,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const updated = await taskService.updateTask(req.params.id, req.body);
@@ -68,7 +68,7 @@ export const updateTask = async (
 export const deleteTask = async (
   req: Request<{ id: string }>,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const response = await taskService.deleteTask(req.params.id);
