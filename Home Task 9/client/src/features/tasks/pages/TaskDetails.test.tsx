@@ -97,11 +97,6 @@ describe("Тестування сторінки детального перег�
   it("При помилці — показується error message", () => {
     const userError = new Error("Помилка при завантаженні користувача");
 
-    (useAsyncTaskDetails as Mock).mockReturnValue({
-      task: mockTask,
-      error: undefined,
-    });
-
     (useAsyncUserDetails as Mock).mockReturnValue({
       user: undefined,
       error: userError,

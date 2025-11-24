@@ -11,6 +11,7 @@ const dbConfig = config[env];
 console.log("DB CONFIG USED:", dbConfig);
 
 const sequelize = new Sequelize({
+  dialect: "postgres",
   host: dbConfig.host,
   port: 5432,
   database: dbConfig.database,

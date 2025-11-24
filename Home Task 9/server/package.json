@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "rootDir": "src",
   "outDir": "dist",
   "scripts": {
     "test": "cross-env NODE_ENV=test jest --runInBand",
